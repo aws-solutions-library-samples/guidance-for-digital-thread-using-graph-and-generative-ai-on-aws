@@ -1,0 +1,7 @@
+~id, ~label, name:String, weight:String, compliance:String, maxresponsetimeinms:Int, parttype:String
+"Turbo-Charger-Actuation", Part, "Turbo-Charger-Actuation", "2.5 LB", "ISO 9001:2015", 100, "Electric"
+"Intercooler-System", Part, "Intercooler-System", "12 LB", "ISO 9001:2015", 100, "air to air intercooler"
+"Exhaust-Oil-Circulation", Part, "Exhaust-Oil-Circulation", "20 LB", "EPA", 30, "dual flow"
+"Intake-System", Part, "Intake-System", "5 LB", "CARB Emission Standard", 20, "cold air intake"
+"Mounting-Support-Structure", Part, "Mounting-Support-Structure", "3 LB", "CARB Emission Standard", 0, "Engine Bay Reinforcement"
+"Turbo-Charger-Housing-Assembly", Part, "Turbo-Charger-Housing-Assembly", "5 LB", "ISO 9001:2015", 0, "Electric"

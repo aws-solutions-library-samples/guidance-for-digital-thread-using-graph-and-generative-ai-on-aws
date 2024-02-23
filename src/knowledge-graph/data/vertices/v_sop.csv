@@ -1,0 +1,2 @@
+~id, ~label, name:String, url:String
+"sop1", StandardOperatingProcedure, "Standard Operating Procedure", "https://<yourcompany>/suppliersop/sop.pdf"

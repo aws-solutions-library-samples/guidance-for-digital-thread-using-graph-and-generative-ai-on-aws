@@ -1,0 +1,32 @@
+# Your additional_policy.yml
+Parameters:
+  App:
+    Type: String
+    Description: Your application's name.
+  Env:
+    Type: String
+    Description: The environment name your service, job, or workflow is being deployed to.
+  Name:
+    Type: String
+    Description: Your workload's name.
+
+Resources:
+  GenAIChatBotPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AccessBedrockAndNetptune
+            Effect: Allow
+            Action:
+              - bedrock:*
+              - neptune-db:Read*
+              - neptune-db:Get*
+              - neptune-db:List*
+            Resource: '*'
+
+Outputs:
+  GenAIChatBotPolicyArn: # Result: "GenAIChatBotPolicy" will be added to the task role, granting it access to the said services.
+    Description: "The ARN of the ManagedPolicy to attach to the task role."
+    Value: !Ref GenAIChatBotPolicy

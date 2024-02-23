@@ -1,0 +1,80 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: "Create a user equipped with permissions to create a copilot deployment stack."
+Resources:
+  copilotUser:
+    Type: 'AWS::IAM::User'
+  copilotUserGroup:
+    Type: 'AWS::IAM::Group'
+    Properties:
+      GroupName: copilotUserGroup
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
+        - arn:aws:iam::aws:policy/AmazonECS_FullAccess
+        - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess
+        - arn:aws:iam::aws:policy/AmazonSSMFullAccess
+  addUserToGroup:
+    Type: 'AWS::IAM::UserToGroupAddition'
+    Properties:
+      GroupName: !Ref copilotUserGroup
+      Users:
+        - !Ref copilotUser
+  copilotAccessKeys:
+    Type: 'AWS::IAM::AccessKey'
+    Properties:
+      UserName:
+        Ref: "copilotUser"
+  copilotPolicy:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyName: 'copilotPolicy'
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - sts:AssumeRole
+              - sts:GetCallerIdentity
+              - tag:GetResources
+              - iam:CreateRole
+              - iam:CreateServiceLinkedRole
+              - iam:GetRole
+              - iam:GetRolePolicy
+              - iam:ListAttachedRolePolicies
+              - iam:ListRolePolicies
+              - iam:ListRoleTags
+              - iam:PutRolePolicy
+              - iam:PassRole
+              - kms:Decrypt
+              - kms:GenerateDataKey
+              - ssm:DeleteParameter
+              - ssm:GetParameter
+              - ssm:GetParametersByPath
+              - ssm:PutParameter
+              - ssm:AddTagsToResource
+            Resource: '*'
+      Groups:
+        - !Ref copilotUserGroup
+  cfnPolicy:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyName: 'cfnPolicy'
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - sts:AssumeRole
+              - cognito:*
+              - neptune:*
+              - bedrock:*
+              - cognito-idp:*
+            Resource: '*'
+      Groups:
+        - !Ref copilotUserGroup
+Outputs:
+  AwsAccessKey:
+    Description: "Access token"
+    Value: !Ref copilotAccessKeys
+  AwsAccessToken:
+      Description: "Access token"
+      Value: !GetAtt copilotAccessKeys.SecretAccessKey

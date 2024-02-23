@@ -1,0 +1,6 @@
+~id, ~label, name:String, description:String, url:String
+"CAD Model", Document, "CAD Model", "CAD Model Document for Turbo Motor", "cad url"
+"Technical Specification", Document, "Technical Specification", "Technical Specification for Turbo Motor", "Technical Specification url"
+"Compliance document", Document, "Compliance document", "Compliance document for Turbo Motor", "Compliance document url"
+"Maintenance Manual", Document, "Maintenance Manual", "Maintenance Manual for Turbo Motor", "Maintenance Manual url"
+"CAE Simulation Document", Document, "CAE Simulation Document", "CAE Simulation Document for Turbo Motor", "CAE Simulation url"

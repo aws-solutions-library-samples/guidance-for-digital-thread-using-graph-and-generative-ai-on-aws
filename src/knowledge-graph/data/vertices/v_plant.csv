@@ -1,0 +1,3 @@
+~id, ~label, name:String, location:String, productioncapacity:Int
+"Production Plant Austin", Plant, "Production Plant Austin", "Austin", 50000
+"Production Plant Dallas", Plant, "Production Plant Dallas", "Dallas", 30000

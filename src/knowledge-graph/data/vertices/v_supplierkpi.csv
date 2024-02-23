@@ -1,0 +1,4 @@
+~id, ~label, name:String, leadtime:String, correctiveactionresponsetime:String, ontimedelivery:String
+"Max Holdings Supplier KPI", supplierkpi, "Max Holdings Supplier KPI", "14 days", "7 days", "95 percent"
+"Edge Supplier KPI", supplierkpi, "Edge Supplier KPI", "16 days", "8 days", "95 percent"
+"NFI International Supplier KPI", supplierkpi, "NFI International Supplier KPI", "18 days", "10 days", "92 percent"

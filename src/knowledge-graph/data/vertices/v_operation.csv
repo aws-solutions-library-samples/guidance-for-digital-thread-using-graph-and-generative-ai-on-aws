@@ -1,0 +1,3 @@
+~id, ~label, name:String, description:String, averagecycletime:Int
+"OP Turbo Motor Assembly", Operation, "OP Turbo Motor Assembly", "Assembly based on manual instructions", 45
+"OP Turbo Motor Testing", Operation, "OP Turbo Motor Testing", "check rpm", 15

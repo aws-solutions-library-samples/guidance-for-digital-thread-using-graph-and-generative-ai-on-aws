@@ -1,0 +1,5 @@
+~id, ~label, name:String, location:String, productioncapacity:Int, qualityscore:Double, correctiveactionresponsetime:String, leadtime:String
+"Max Holdings", Supplier, "Max Holdings", "Dallas", 10000, 9.2, "7 Days", "14 Days"
+"Edge Supplier", Supplier, "Edge Supplier", "Austin", 8000, 9.1, "8 Days", "16 Days"
+"NFI International", Supplier, "NFI International", "Houston", 12000, 8.9, "10 Days", "20 Days"
+"TXP Manufacturing", Supplier, "TXP Manufacturing", "Atlanta", 9000, 9.0, "10 Days", "18 Days"

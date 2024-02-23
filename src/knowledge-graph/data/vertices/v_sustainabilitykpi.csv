@@ -1,0 +1,2 @@
+~id, ~label, name:String, pcf:String, scope3emissions:String, lca:String, supplychaintransperancyindex:String
+"Sustainability KPI", Sustainability, "Sustainability KPI", "0.25 kg of CO2 equivalent per unit of energy output", "1200 kg CO2 equivalent per motor", "1800 kg CO2 equivalent per motor", "85 percent"

@@ -1,0 +1,11 @@
+~id, ~label, name:String, type:String, description:String
+"Technical-Requirement-1", Requirement, "Technical-Requirement-1", "Technical", "The turbo motor should produce a minimum of 350 horsepower and 400 lb-ft of torque"
+"Technical-Requirement-2", Requirement, "Technical-Requirement-2", "Technical", "The turbo motor should have an rpm of 10000"
+"Technical-Requirement-3", Requirement, "Technical-Requirement-3", "Technical", "The turbo motor should have a tensile strength should be 1500 psi"
+"Technical-Requirement-4", Requirement, "Technical-Requirement-4", "Technical", "The motor's design should allow for easy integration into both front-wheel-drive and rear-wheel-drive vehicles"
+"Safety-Requirement-1", Requirement, "Safety-Requirement-1", "Safety", "The turbo motor shall include an overboost protection mechanism that prevents the boost pressure from exceeding 1.5 bar (21.8 psi) to mitigate the risk of engine damage under prolonged high-stress conditions"
+"Regulatory-Requirement-1", Requirement, "Regulatory-Requirement-1", "Regulatory", "The turbo motor shall comply with Euro 6 emission standards with NOx emissions not exceeding 80 mg/km as specified by the European Union regulations"
+"Interface-Requirement-1", Requirement, "Interface-Requirement-1", "Interface", "The turbo motor's electronic control unit (ECU) shall communicate with the vehicle's onboard diagnostics system using the Controller Area Network (CAN) protocol complying with the ISO 15765-4 standard for diagnostic communication"
+"Performance-Requirement-1", Requirement, "Performance-Requirement-1", "Performance", "The turbo motor shall achieve a maximum 0 to 100 km/h (0 to 62 mph) acceleration time of 6.5 seconds when installed in a vehicle with a curb weight of 2800 lbs"
+"Functional-Requirement-1", Requirement, "Functional-Requirement-1", "Functional", "The turbo motor shall support multiple drive modes that adjust throttle response and boost characteristics to suit different driving scenarios and preference"
+"Functional-Requirement-2", Requirement, "Functional-Requirement-2", "Functional", "The turbo motor shall implement an adaptive boost control strategy that adjusts the boost pressure based on real-time engine load and ambient conditions to optimize performance while preventing engine knock"

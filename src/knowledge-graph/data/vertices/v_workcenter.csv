@@ -1,0 +1,5 @@
+~id, ~label, name:String, productionlinetype:String, capacity:Int
+"Body Manufacturing", WorkCenter, "Body Manufacturing", "Automated", 1000
+"Engine Assembly Work Center", WorkCenter, "Engine Assembly Work Center", "Automated", 500
+"Testing Work Center 1", WorkCenter, "Testing Work Center 1", "Automated", 1000
+"Testing Work Center 2", WorkCenter, "Testing Work Center 2", "Automated", 700

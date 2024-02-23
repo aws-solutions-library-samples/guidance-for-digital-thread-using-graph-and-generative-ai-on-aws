@@ -1,0 +1,2 @@
+~id, ~label, name:String, location:String
+"ABC-Industries-Inc", Organization, "ABC-Industries-Inc", "Dallas"

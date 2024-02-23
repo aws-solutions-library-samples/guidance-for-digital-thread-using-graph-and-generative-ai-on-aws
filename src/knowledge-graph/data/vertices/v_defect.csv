@@ -1,0 +1,3 @@
+~id, ~label, name:String, description:String, testresult:String
+"QC-1234-1", QualityDefect, "QC-1234-1", "rpm should be 10000. but it is 9800", "fail"
+"QC-6435-2", QualityDefect, "QC-6435-2", "tensile strength should be 1500 psi. but it is 1200 psi", "fail"

@@ -1,0 +1,5 @@
+~id, ~label, name:String, description:String, status:String
+"RPM Tester", Machine, "RPM Tester", "check rpm", "Operational"
+"Tensile Tester", Machine, "Tensile Tester", "Tensile Tester", "Operational"
+"CNC Milling", Machine, "CNC Milling", "CNC Milling Machine", "Operational"
+"Injection Molding", Machine, "Injection Molding", "Injection Molding Machine", "Operational"
