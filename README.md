@@ -1,202 +1,198 @@
-# Guidance Title (required)
+# Building a Knowledge graph and Generative AI powered Manufacturing Digital Thread
+
+## Table of Contents
+1. [Introduction](#introduction)
+2. [Prerequisites](#prerequisites)
+3. [Deployment](#deployment)
+4. [Data import](#data-import)
+5. [Application User Guide](#application-user-guide)
+6. [Cleaning up](#cleaning-up)
+7. [Architecture Diagram](#architecture-diagram)
+8. [Security](#security)
 
-The Guidance title should be consistent with the title established first in Alchemy.
 
-**Example:** *Guidance for Product Substitutions on AWS*
+## Introduction
 
-This title correlates exactly to the Guidance it’s linked to, including its corresponding sample code repository. 
+Manufacturing organizations have vast amounts of knowledge dispersed across the product lifecycle, which can result in limited visibility, knowledge gaps, and the inability to continuously improve. A digital thread offers an integrated approach to combine disparate data sources across enterprise systems to drive traceability, accessibility, collaboration, and agility. 
 
+In this sample project, learn how to create an intelligent manufacturing digital thread using a combination of knowledge graph and generative AI technologies based on data generated throughout the product lifecycle, and their interconnected relationship. Explore use cases and discover actionable steps to start your intelligent digital thread journey.
 
-## Table of Content (required)
+ <img src="docs/mfg-digital-thread-demo.gif" alt="Demo video" width="640" height="auto">
 
-List the top-level sections of the README template, along with a hyperlink to the specific section.
+## Prerequisites
 
-### Required
+To implement the instructions in this post, you will need the following accounts:
 
-1. [Overview](#overview-required)
-    - [Cost](#cost)
-2. [Prerequisites](#prerequisites-required)
-    - [Operating System](#operating-system-required)
-3. [Deployment Steps](#deployment-steps-required)
-4. [Deployment Validation](#deployment-validation-required)
-5. [Running the Guidance](#running-the-guidance-required)
-6. [Next Steps](#next-steps-required)
-7. [Cleanup](#cleanup-required)
+* An AWS account – [how to create a new AWS account](https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/)
+* Access Anthropic Claude-v2 model in Amazon Bedrock - [how to manage model access in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html)
+* Create and configure the local environment
+    * [Configure AWS credentials](https://aws.github.io/copilot-cli/docs/credentials/)
+    * [Install AWS Copilot](https://aws.github.io/copilot-cli/docs/getting-started/install/)
+    * [Install and run Docker](https://www.docker.com/get-started/)
 
-***Optional***
 
-8. [FAQ, known issues, additional considerations, and limitations](#faq-known-issues-additional-considerations-and-limitations-optional)
-9. [Revisions](#revisions-optional)
-10. [Notices](#notices-optional)
-11. [Authors](#authors-optional)
+## Deployment
 
-## Overview (required)
+1. Clone the repository into your environment
+    ```
+    git clone https://github.com/aws-samples/genai-mfg-digitalthread-with-neptune-kg.git
+    cd genai-mfg-digitalthread-with-neptune-kg
+    ```
 
-1. Provide a brief overview explaining the what, why, or how of your Guidance. You can answer any one of the following to help you write this:
+2. To deploy this app, run:
 
-    - **Why did you build this Guidance?**
-    - **What problem does this Guidance solve?**
+    ```
+    chmod +x deploy-script.sh
+    ./deploy-script.sh
+    ```
 
-2. Include the architecture diagram image, as well as the steps explaining the high-level overview and flow of the architecture. 
-    - To add a screenshot, create an ‘assets/images’ folder in your repository and upload your screenshot to it. Then, using the relative file path, add it to your README. 
+    > The deploy-script.sh will set up the following resources in your account:
+    > * Amazon Cognito User pool with a demo
+    > * Amazon Neptune Serverless cluster
+    > * Amazon Neptune workbrench Sagemaker notebook
+    > * A VPC
+    > * Subnets/Security Groups
+    > * Application Load Balancer
+    > * Amazon ECR Repositories
+    > * ECS Cluster & Service running on AWS Fargate
 
-### Cost
+    In case if you are asked about the AWS credentials as shown below. Please read [Configure AWS credentials](https://aws.github.io/copilot-cli/docs/credentials/).
+    ```
+    Which credentials would you like to use to create demo?  [Use arrows to move, type to filter, ? for more help]
+      > Enter temporary credentials
+        [profile default]
+    ```
 
-This section is for a high-level cost estimate. Think of a likely straightforward scenario with reasonable assumptions based on the problem the Guidance is trying to solve. If applicable, provide an in-depth cost breakdown table in this section.
+3. Visit the URL after AWS Copilot deployment to chat with the digital thread.
+    ```
+    ✔ Deployed service genai-chatbot-app.
+    Recommended follow-up action:
+    - Your service is accessible at http://genai--Publi-xxxxxxx-111111111.xx-xxxx-x.elb.amazonaws.com over the internet.
+    ```
 
-Start this section with the following boilerplate text:
+## Data import
 
-_You are responsible for the cost of the AWS services used while running this Guidance. As of <month> <year>, the cost for running this Guidance with the default settings in the <Default AWS Region (Most likely will be US East (N. Virginia)) > is approximately $<n.nn> per month for processing ( <nnnnn> records )._
+Newly deployed Amazon Neptune clusters does not contains any data. To showcase the interaction between Gen AI Digital Thread and Neptune knowledge graph, please follow the below steps to import the sample data from [src/knowledge-graph/data/](src/knowledge-graph/data) into the graph database.
 
-Replace this amount with the approximate cost for running your Guidance in the default Region. This estimate should be per month and for processing/serving resonable number of requests/entities.
+1. Run below bash script to create s3 bucket and upload [src/knowledge-graph/data/](src/knowledge-graph/data) files into Amazon S3
+    ```
+    ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
+    S3_BUCKET_NAME="mfg-digitalthread-data-${ACCOUNT_ID}"
+    aws s3 mb "s3://$S3_BUCKET_NAME"
+    aws s3 cp ./src/knowledge-graph/data/ s3://$S3_BUCKET_NAME/sample_data/ --recursive
+    ```
 
+2. Visit **Neptune Workbench** notebook Jupyter notebook.
 
-## Prerequisites (required)
+    From **AWS Console**:
+    1. Sign in to the AWS Management Console, and open the Amazon Neptune console at https://console.aws.amazon.com/neptune/home
+    2. In the navigation pane on the left, choose Notebooks.
+    3. Select the notebook which is deployed by the `deploy-script.sh` CloudFormation
+    4. Choose Open Jupyter 
 
-### Operating System (required)
+    From URL in **CloudFormation** stack:
+    1. Sign in to the AWS Management Console, and open the AWS CloudFormation console at https://console.aws.amazon.com/cloudformation/
+    2. In the navigation pane on the left, choose Stacks. 
+    3. Select the stack `mfg-dt-neptune`
+    4. In the pane on the right, select **Outputs** tab
+    5. Find `NeptuneSagemakerNotebook` Key to find the URL of the Neptune Sagemaker Notebook.
+    (e.g. https://aws-neptune-notebook-for-neptunedbcluster-xxxxxxxx.notebook.us-east-1.sagemaker.aws/)
 
-- Talk about the base Operating System (OS) and environment that can be used to run or deploy this Guidance, such as *Mac, Linux, or Windows*. Include all installable packages or modules required for the deployment. 
-- By default, assume Amazon Linux 2/Amazon Linux 2023 AMI as the base environment. All packages that are not available by default in AMI must be listed out.  Include the specific version number of the package or module.
+3. After you go into Jupyter notebook, click on `Upload` button on the right top corner and upload [src/knowledge-graph/mfg-neptune-bulk-import.ipynb](src/knowledge-graph/mfg-neptune-bulk-import.ipynb) file into the Neptune notebook. (PS: click `upload` blue button to confirm uploading)
 
-**Example:**
-“These deployment instructions are optimized to best work on **<Amazon Linux 2 AMI>**.  Deployment in another OS may require additional steps.”
+4. Go into `mfg-neptune-bulk-import.ipynb` and follow the steps inside the notebook to load the sample data into the Neptune database.
 
-- Include install commands for packages, if applicable.
+5. Successful data import will generate below knowledge graph.
 
+    <img src="docs/mfg-neptune-schema.png" alt="Graph" width="500" height="auto">
 
-### Third-party tools (If applicable)
+## Application User Guide
 
-*List any installable third-party tools required for deployment.*
+1. You will be asked to login with a Cognito user. In this demo, a sample `demo_user` has been created. (Temporary Password = `TempPassw0rd!`).  
+    <img src="docs/login_screen.jpg" alt="Login screen" width="300" height="auto">
 
+    Reset Password is required when you login for the first time.
 
-### AWS account requirements (If applicable)
+    <img src="docs/reset_pw_screen.jpg" alt="Reset Password screen" width="300" height="auto">
 
-*List out pre-requisites required on the AWS account if applicable, this includes enabling AWS regions, requiring ACM certificate.*
+2. The main page will be displayed and you can chat with the digital thread graph.
 
-**Example:** “This deployment requires you have public ACM certificate available in your AWS account”
+    <img src="docs/main_screen.jpg" alt="Main screen" width="500" height="auto">
 
-**Example resources:**
-- ACM certificate 
-- DNS record
-- S3 bucket
-- VPC
-- IAM role with specific permissions
-- Enabling a Region or service etc.
+    Sample questions can be found by expanding the `Example questions` menu.
 
+## Cleaning up
 
-### aws cdk bootstrap (if sample code has aws-cdk)
+*Attention: All data in the Amazon Neptune will be lost after cleaning up.*
 
-<If using aws-cdk, include steps for account bootstrap for new cdk users.>
+Since this demo sets up resources in your account, let's delete them so you don't get charged.
 
-**Example blurb:** “This Guidance uses aws-cdk. If you are using aws-cdk for first time, please perform the below bootstrapping....”
+> The cleanup-script.sh will delete the following resources in your account:
+    > * Amazon Cognito User pool with a demo
+    > * Amazon Neptune Serverless cluster
+    > * Amazon Neptune workbrench Sagemaker notebook
+    > * A VPC
+    > * Subnets/Security Groups
+    > * Application Load Balancer
+    > * Amazon ECR Repositories
+    > * ECS Cluster & Service running on AWS Fargate
 
-### Service limits  (if applicable)
+```
+chmod +x cleanup-script.sh
+./cleanup-script.sh 
+```
 
-<Talk about any critical service limits that affect the regular functioning of the Guidance. If the Guidance requires service limit increase, include the service name, limit name and link to the service quotas page.>
+Input 'y' to confirm cleanup:
 
-### Supported Regions (if applicable)
+```
+This script is to clean up the demo application.
 
-<If the Guidance is built for specific AWS Regions, or if the services used in the Guidance do not support all Regions, please specify the Region this Guidance is best suited for>
+Are you sure to delete the demo application? (y/n): y
 
+   Are you sure you want to delete application genai-chatbot-app? [? for help] (y/N) y
+```
 
-## Deployment Steps (required)
 
-Deployment steps must be numbered, comprehensive, and usable to customers at any level of AWS expertise. The steps must include the precise commands to run, and describe the action it performs.
+## Architecture Diagram
 
-* All steps must be numbered.
-* If the step requires manual actions from the AWS console, include a screenshot if possible.
-* The steps must start with the following command to clone the repo. ```git clone xxxxxxx```
-* If applicable, provide instructions to create the Python virtual environment, and installing the packages using ```requirement.txt```.
-* If applicable, provide instructions to capture the deployed resource ARN or ID using the CLI command (recommended), or console action.
+![alt text](docs/architecture.png "Architecture Diagram of Digital Thread")
+<details>
+<summary>Details description</summary>
 
- 
-**Example:**
+1. Identify key stakeholders in the manufacturing organization:
+To embark on a successful journey towards implementing cutting-edge technologies like Generative AI, graphs, and digital thread, it's essential to identify key stakeholders within the manufacturing organization. This includes design engineering, manufacturing engineering, supply chain professionals, operations teams, CXOs, and IT experts. Understanding their distinct business interests and use cases lays the foundation for a connected digital thread.
+2. Identify data sources for building the Digital Thread:
+Determine the fundamental data sources required to build a comprehensive digital thread using graph technologies. These may include Product Lifecycle Management (PLM), Enterprise Resource Planning (ERP), Manufacturing Execution Systems/Manufacturing Operations Management (MES/MOM), Customer Relationship Management (CRM), and other enterprise applications. By identifying these sources and data elements, enterprises can ensure the inclusion of critical data points for a holistic view of their operations. In this sample code, we have provided a few list of objects from PLM, ERP, MES and their interconnected relationships.
+3. Upload Data to S3
+Upload the data to Amazon Simple Storage Service (Amazon S3). This scalable and durable cloud storage solution provides a secure repository for the collected data, setting the stage for further processing and analysis.
+4. Use Bulk Loader to load data into Amazon Neptune database
+Leverage Amazon Neptune Bulk loader capability to load the data stored in Amazon S3 into Amazon Neptune graph database. The necessary schema and relationships are created within Neptune to create a knowledge graph and provides the basis for Gen AI queries.
+5. Create User interface
+Create a front end by combining Streamlit App, Amazon Elastic Container Service (ECS) with Fargate for container orchestration, Amazon Elastic Container Registry (ECR) for managing container images, Elastic Load Balancer (ELB) for efficient traffic distribution, and Amazon Cognito for secure user authentication. This comprehensive setup, orchestrated with AWS Copilot CLI, ensures a scalable, secure, and responsive user interface, facilitating a seamless user experience for stakeholders interacting with the digital thread and linked manufacturing data.
+6. Establish knowledge graph, LLM connection and orchestrate using Langchain.
+Establish the linkage between Amazon Bedrock (Claude V2), Amazon Neptune and orchestrate the integration seamlessly with Langchain. The orchestrator coordinates the entire process of generating the query from the foundation model, executing the query against the knowledge graph and return the results in natural language to the user. This step enhances the interconnectedness and interoperability of data within the manufacturing processes, promoting a more cohesive and intelligent system.
 
-1. Clone the repo using command ```git clone xxxxxxxxxx```
-2. cd to the repo folder ```cd <repo-name>```
-3. Install packages in requirements using command ```pip install requirement.txt```
-4. Edit content of **file-name** and replace **s3-bucket** with the bucket name in your account.
-5. Run this command to deploy the stack ```cdk deploy``` 
-6. Capture the domain name created by running this CLI command ```aws apigateway ............```
+</details>
 
+## Details
+For additional details, please stay tune and refer to the associated blog post which will be published later.
 
+## Contributors
 
-## Deployment Validation  (required)
+- Shing Poon, AWS / [Email](mailto:hspoon@amazon.com) / [LinkedIn](https://www.linkedin.com/in/shing-poon-78131336/) 
+- Raja GT, AWS / [Email](mailto:gtraja@amazon.com) / [LinkedIn](https://www.linkedin.com/in/rajagt/)
 
-<Provide steps to validate a successful deployment, such as terminal output, verifying that the resource is created, status of the CloudFormation template, etc.>
 
+## Security
 
-**Examples:**
+1. If you need HTTPS connection, please create a new SSL/TLS certificate in AWS Certificate Manager (ACM) and associate with a load balancer. [How to create SSL/TLS Certificate and associate with load balancer](https://repost.aws/knowledge-center/associate-acm-certificate-alb-nlb#)
+2. Use [Web Application Firewall (AWS WAF)](https://aws.amazon.com/waf/) which helps to protect your web applications from common application-layer exploits that can affect availability or consume excessive resources.
+3. Periodic review of your IAM roles/users is recommended to ensure that they grant the minimum privileges required for the function to [apply least-privilege permission](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#grant-least-privilege). You may also use [IAM Access Analyzer](https://docs.aws.amazon.com/IAM/latest/UserGuide/what-is-access-analyzer.html) to identify unused access.
+4. Always grant the minimum required permissions in Security Groups. [Neptune Security](https://docs.aws.amazon.com/neptune/latest/userguide/get-started-security.html#get-started-security-groups)
+5. Please follow the Security in the cloud section of the shared responsibility model. [Shared Responsibility Model](https://aws.amazon.com/compliance/shared-responsibility-model/)
 
-* Open CloudFormation console and verify the status of the template with the name starting with xxxxxx.
-* If deployment is successful, you should see an active database instance with the name starting with <xxxxx> in        the RDS console.
-*  Run the following CLI command to validate the deployment: ```aws cloudformation describe xxxxxxxxxxxxx```
+See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
 
+## License
 
-
-## Running the Guidance (required)
-
-<Provide instructions to run the Guidance with the sample data or input provided, and interpret the output received.> 
-
-This section should include:
-
-* Guidance inputs
-* Commands to run
-* Expected output (provide screenshot if possible)
-* Output description
-
-
-
-## Next Steps (required)
-
-Provide suggestions and recommendations about how customers can modify the parameters and the components of the Guidance to further enhance it according to their requirements.
-
-
-## Cleanup (required)
-
-- Include detailed instructions, commands, and console actions to delete the deployed Guidance.
-- If the Guidance requires manual deletion of resources, such as the content of an S3 bucket, please specify.
-
-
-
-## FAQ, known issues, additional considerations, and limitations (optional)
-
-
-**Known issues (optional)**
-
-<If there are common known issues, or errors that can occur during the Guidance deployment, describe the issue and resolution steps here>
-
-
-**Additional considerations (if applicable)**
-
-<Include considerations the customer must know while using the Guidance, such as anti-patterns, or billing considerations.>
-
-**Examples:**
-
-- “This Guidance creates a public AWS bucket required for the use-case.”
-- “This Guidance created an Amazon SageMaker notebook that is billed per hour irrespective of usage.”
-- “This Guidance creates unauthenticated public API endpoints.”
-
-
-Provide a link to the *GitHub issues page* for users to provide feedback.
-
-
-**Example:** *“For any feedback, questions, or suggestions, please use the issues tab under this repo.”*
-
-## Revisions (optional)
-
-Document all notable changes to this project.
-
-Consider formatting this section based on Keep a Changelog, and adhering to Semantic Versioning.
-
-## Notices (optional)
-
-Include a legal disclaimer
-
-**Example:**
-*Customers are responsible for making their own independent assessment of the information in this Guidance. This Guidance: (a) is for informational purposes only, (b) represents AWS current product offerings and practices, which are subject to change without notice, and (c) does not create any commitments or assurances from AWS and its affiliates, suppliers or licensors. AWS products or services are provided “as is” without warranties, representations, or conditions of any kind, whether express or implied. AWS responsibilities and liabilities to its customers are controlled by AWS agreements, and this Guidance is not part of, nor does it modify, any agreement between AWS and its customers.*
-
-
-## Authors (optional)
-
-Name of code contributors
+This library is licensed under the MIT-0 License. See the LICENSE file.
