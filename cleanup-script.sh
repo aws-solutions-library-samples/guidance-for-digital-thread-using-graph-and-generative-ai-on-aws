@@ -13,6 +13,16 @@ fi
 echo "Manufacturing Digital Thread aws copilot application will be deleted. Delete started..."
 copilot app delete
 rm -rf copilot/environments/demo
+
+# Revert app.env files to empty using cat
+cat <<EOF > copilot/genai-chatbot-app/app.env
+NEPTUNE_HOST=
+NEPTUNE_PORT=
+COGNITO_POOL_ID=
+COGNITO_APP_CLIENT_ID=
+COGNITO_APP_CLIENT_SECRET=
+EOF
+
 echo "Manufacturing Digital Thread aws copilot application deleted successfully!!!!"
 
 # delete CloudFormation stack
