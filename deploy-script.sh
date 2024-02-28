@@ -19,6 +19,13 @@ if [ $? -ne 0 ]; then
 fi
 echo "AWS credentials verified successfully!!!"
 
+echo "Checking docker daemon is running..."
+if (! docker stats --no-stream ); then
+  echo "Aborted....Please check docker daemon is running!!!!"
+  exit 1
+fi
+echo "docker daemon is running!!!"
+
 ACCOUNT_ID=$(aws sts get-caller-identity --output text --query Account)
 PROJECT_TAG="Key=Project,Value=mfg-digitalthread"
 
@@ -85,13 +92,13 @@ else
     --temporary-password $DEMO_USER_PW \
     --message-action SUPPRESS \
     --desired-delivery-mediums EMAIL
-  echo "Demo user $DEMO_USERNAME created successfully. Setting password...."
-  aws cognito-idp admin-set-user-password \
-    --user-pool-id $CognitoUserPoolID \
-    --username $DEMO_USERNAME \
-    --password $DEMO_USER_PW \
-    --permanent
-  echo "Demo user $DEMO_USERNAME password updated successfully!!!!"
+  # echo "Demo user $DEMO_USERNAME created successfully. Setting password...."
+  # aws cognito-idp admin-set-user-password \
+  #   --user-pool-id $CognitoUserPoolID \
+  #   --username $DEMO_USERNAME \
+  #   --password $DEMO_USER_PW \
+  #   --permanent
+  # echo "Demo user $DEMO_USERNAME password updated successfully!!!!"
 fi
 
 echo "Step 1: Create Cognito User Pool for Manufacturing Digital Thread: Completed!!!!!"
