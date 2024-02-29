@@ -92,13 +92,7 @@ else
     --temporary-password $DEMO_USER_PW \
     --message-action SUPPRESS \
     --desired-delivery-mediums EMAIL
-  # echo "Demo user $DEMO_USERNAME created successfully. Setting password...."
-  # aws cognito-idp admin-set-user-password \
-  #   --user-pool-id $CognitoUserPoolID \
-  #   --username $DEMO_USERNAME \
-  #   --password $DEMO_USER_PW \
-  #   --permanent
-  # echo "Demo user $DEMO_USERNAME password updated successfully!!!!"
+  echo "Demo user $DEMO_USERNAME created successfully."
 fi
 
 echo "Step 1: Create Cognito User Pool for Manufacturing Digital Thread: Completed!!!!!"
