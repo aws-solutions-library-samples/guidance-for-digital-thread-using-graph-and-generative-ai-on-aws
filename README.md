@@ -206,25 +206,30 @@ Blog will be released in April 2024.
 - Raja GT, AWS / [Email](mailto:gtraja@amazon.com) / [LinkedIn](https://www.linkedin.com/in/rajagt/)
 
 ## FAQ
-```
+
 1. Can i execute the cleanup-script.sh if the neptune cluster is in stopped state?
-```
-No. Cloudformation deletion will fail with the error "Db cluster neptunedbcluster is in stopped state". Please start the neptune cluster either through the aws console or cli command before proceeding.
 
-```
+    No. Cloudformation deletion will fail with the error "Db cluster neptunedbcluster is in stopped state". Please start the neptune cluster either through the aws console or cli command before proceeding.
+
+
 2. What to do when the CloudFormation failed to create neptune cluster with the error "The following resource(s) failed to create: [ElasticIP3, ElasticIP1, ElasticIP2]"? 
-```
-Before running the Neptune Cloudformation template, ensure you have enough capacity for the creation of 3 Elastic IP's. Verify the number of Elastic IP's in the aws console https://us-west-2.console.aws.amazon.com/ec2/home?region=us-west-2#Addresses: before deploying the script.  
 
-```
+    Before running the Neptune Cloudformation template, ensure you have enough capacity for the creation of 3 Elastic IP's. Verify the number of Elastic IP's in the aws console https://us-west-2.console.aws.amazon.com/ec2/home?region=us-west-2#Addresses: before deploying the script.  
+
+
 3. Can i create a new user apart from the demo_user?
-```
-Yes. You can navigate to the AWS Cognito user pool and create a new user.
 
-```
+    Yes. You can navigate to the AWS Cognito user pool and create a new user using the aws console or through cli.
+
+
 4. I got the error "jq: command not found" while running the deploy-script.sh. How to fix?
-```
-Run the command "brew install jq". Please visit [Install jq](https://jqlang.github.io/jq/download/) page for more information
+
+    Please visit [Install jq](https://jqlang.github.io/jq/download/) page for more information.
+
+
+5. I need to know more about Amazon Neptune and Amazon Bedrock.
+
+    Please see the [Amazon Bedrock](https://aws.amazon.com/bedrock/) and [Amazon Neptune](https://aws.amazon.com/neptune/) product page for more information.
 
 ## License
 
