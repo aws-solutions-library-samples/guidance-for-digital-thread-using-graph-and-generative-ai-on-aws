@@ -29,6 +29,7 @@ To implement the instructions in this post, you will need the following accounts
     * [Configure AWS credentials](https://aws.github.io/copilot-cli/docs/credentials/)
     * [Install AWS Copilot](https://aws.github.io/copilot-cli/docs/getting-started/install/)
     * [Install and run Docker](https://www.docker.com/get-started/)
+    * [Install jq] (https://jqlang.github.io/jq/download/)
 
 
 ## Deployment
