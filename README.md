@@ -226,8 +226,11 @@ Blog will be released in April 2024.
 
     Please visit [Install jq](https://jqlang.github.io/jq/download/) page for more information.
 
+5. What do i do if i get a warning 'The requested image's platform (linux/arm64/v8) does not match the detected host platform (linux/amd64) and no specific platform was requested' followed by a failure during copilot deploy?
 
-5. I need to know more about Amazon Neptune and Amazon Bedrock.
+    This error can be resolved by deploying the script from arm64 based instance. Please see the platform attribute in the manifest.yml file present under copilot/genai-chatbot-app. The platform attribute is set to linux/arm64.
+
+6. I need to know more about Amazon Neptune and Amazon Bedrock.
 
     Please see the [Amazon Bedrock](https://aws.amazon.com/bedrock/) and [Amazon Neptune](https://aws.amazon.com/neptune/) product page for more information.
 
