@@ -85,7 +85,7 @@ def build_sidebar():
         st.text_area("Cypher Custom Prompt Template",key="cypher_custom_template", value=app_config.get_cypher_custom_template())
         st.text_area("QA Custom Prompt Template", key="custom_qa_template", value=app_config.get_custom_qa_template())
         st.divider()
-        "[View the source code](https://github.com/aws-samples/genai-mfg-digitalthread-with-neptune-kg)"
+        "[View the source code](https://github.com/aws-solutions-library-samples/guidance-for-digital-thread-using-graph-and-generative-ai-on-aws/)"
 
 
 ## build main UI using streamlit 
