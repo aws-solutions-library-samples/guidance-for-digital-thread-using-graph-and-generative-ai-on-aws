@@ -1,4 +1,4 @@
-# Building a Knowledge graph and Generative AI powered Manufacturing Digital Thread
+# Building Manufacturing Digital Thread Using Graph and Generative AI on AWS
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -9,19 +9,24 @@
 6. [Cleaning up](#cleaning-up)
 7. [Architecture Diagram](#architecture-diagram)
 8. [Security](#security)
+9. [AWS Guidance](#aws-guidance)
+10. [Blog](#blog)
+11. [Contributors](#contributors)
+12. [FAQ](#faq)
+13. [License](#license)
 
 
 ## Introduction
 
 Manufacturing organizations have vast amounts of knowledge dispersed across the product lifecycle, which can result in limited visibility, knowledge gaps, and the inability to continuously improve. A digital thread offers an integrated approach to combine disparate data sources across enterprise systems to drive traceability, accessibility, collaboration, and agility. 
 
-In this sample project, learn how to create an intelligent manufacturing digital thread using a combination of knowledge graph and generative AI technologies based on data generated throughout the product lifecycle, and their interconnected relationship. Explore use cases and discover actionable steps to start your intelligent digital thread journey.
+In this sample project, learn how to create an intelligent manufacturing digital thread using a combination of knowledge graph and generative AI technologies based on data generated throughout the product lifecycle, and their interconnected relationship. Explore use cases and discover actionable steps to start your intelligent digital thread journey using graph and generative AI on AWS.
 
  <img src="docs/mfg-digital-thread-demo.gif" alt="Demo video" width="640" height="auto">
 
 ## Prerequisites
 
-To implement the instructions in this post, you will need the following accounts:
+To execute the steps outlined in this post, you will require the following:
 
 * An AWS account – [how to create a new AWS account](https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/)
 * Access Anthropic Claude-v2 model in Amazon Bedrock - [how to manage model access in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html)
@@ -29,8 +34,8 @@ To implement the instructions in this post, you will need the following accounts
     * [Configure AWS credentials](https://aws.github.io/copilot-cli/docs/credentials/)
     * [Install AWS Copilot](https://aws.github.io/copilot-cli/docs/getting-started/install/)
     * [Install and run Docker](https://www.docker.com/get-started/)
-    * [Install jq] (https://jqlang.github.io/jq/download/)
-
+    * [Install jq](https://jqlang.github.io/jq/download/)
+* Ensure you have enough capacity for the creation of 3 Elastic IP's.
 
 ## Deployment
 
@@ -48,13 +53,13 @@ To implement the instructions in this post, you will need the following accounts
     ```
 
     > The deploy-script.sh will set up the following resources in your account:
-    > * Amazon Cognito User pool with a demo
+    > * Amazon Cognito User pool with a demo user account
     > * Amazon Neptune Serverless cluster
-    > * Amazon Neptune workbrench Sagemaker notebook
+    > * Amazon Neptune workbench Sagemaker notebook
     > * A VPC
     > * Subnets/Security Groups
     > * Application Load Balancer
-    > * Amazon ECR Repositories
+    > * Amazon ECR Repository
     > * ECS Cluster & Service running on AWS Fargate
 
     In case if you are asked about the AWS credentials as shown below. Please read [Configure AWS credentials](https://aws.github.io/copilot-cli/docs/credentials/).
@@ -73,7 +78,7 @@ To implement the instructions in this post, you will need the following accounts
 
 ## Data import
 
-Newly deployed Amazon Neptune clusters does not contains any data. To showcase the interaction between Gen AI Digital Thread and Neptune knowledge graph, please follow the below steps to import the sample data from [src/knowledge-graph/data/](src/knowledge-graph/data) into the graph database.
+Newly deployed Amazon Neptune clusters does not contain any data. To showcase the interaction between Amazon Bedrock Gen AI and Neptune knowledge graph based Digital Thread, please follow the below steps to import the sample data from [src/knowledge-graph/data/](src/knowledge-graph/data) into the graph database.
 
 1. Run below bash script to create s3 bucket and upload [src/knowledge-graph/data/](src/knowledge-graph/data) files into Amazon S3
     ```
@@ -88,14 +93,14 @@ Newly deployed Amazon Neptune clusters does not contains any data. To showcase t
     From **AWS Console**:
     1. Sign in to the AWS Management Console, and open the Amazon Neptune console at https://console.aws.amazon.com/neptune/home
     2. In the navigation pane on the left, choose Notebooks.
-    3. Select the notebook which is deployed by the `deploy-script.sh` CloudFormation
-    4. Choose Open Jupyter 
+    3. Select the notebook deployed by the `deploy-script.sh` CloudFormation
+    4. Choose Action -> Open Jupyter 
 
     From URL in **CloudFormation** stack:
     1. Sign in to the AWS Management Console, and open the AWS CloudFormation console at https://console.aws.amazon.com/cloudformation/
     2. In the navigation pane on the left, choose Stacks. 
     3. Select the stack `mfg-dt-neptune`
-    4. In the pane on the right, select **Outputs** tab
+    4. In the right pane, select **Outputs** tab
     5. Find `NeptuneSagemakerNotebook` Key to find the URL of the Neptune Sagemaker Notebook.
     (e.g. https://aws-neptune-notebook-for-neptunedbcluster-xxxxxxxx.notebook.us-east-1.sagemaker.aws/)
 
@@ -103,20 +108,20 @@ Newly deployed Amazon Neptune clusters does not contains any data. To showcase t
 
 4. Go into `mfg-neptune-bulk-import.ipynb` and follow the steps inside the notebook to load the sample data into the Neptune database.
 
-5. Successful data import will generate below knowledge graph.
+5. Successful data import will generate the below knowledge graph.
 
     <img src="docs/mfg-neptune-schema.png" alt="Graph" width="500" height="auto">
 
 ## Application User Guide
 
-1. You will be asked to login with a Cognito user. In this demo, a sample `demo_user` has been created. (Temporary Password = `TempPassw0rd!`).  
+1. You will be asked to login with the Cognito user. In this demo, a sample user `demo_user` will be created with the temporary Password `TempPassw0rd!`.  
     <img src="docs/login_screen.jpg" alt="Login screen" width="300" height="auto">
 
-    Reset Password is required when you login for the first time.
+    Reset Password is required when you login for the first time. Please make sure you follow the password guidelines.
 
     <img src="docs/reset_pw_screen.jpg" alt="Reset Password screen" width="300" height="auto">
 
-2. The main page will be displayed and you can chat with the digital thread graph.
+2. The main page will be displayed and you can chat with the digital thread Gen AI and graph application.
 
     <img src="docs/main_screen.jpg" alt="Main screen" width="500" height="auto">
 
@@ -124,7 +129,7 @@ Newly deployed Amazon Neptune clusters does not contains any data. To showcase t
 
 ## Cleaning up
 
-*Attention: All data in the Amazon Neptune will be lost after cleaning up.*
+*Attention: All data in Amazon Neptune will be lost after cleaning up.*
 
 Since this demo sets up resources in your account, let's delete them so you don't get charged.
 
@@ -146,17 +151,21 @@ chmod +x cleanup-script.sh
 Input 'y' to confirm cleanup:
 
 ```
-This script is to clean up the demo application.
+This script is to clean up the Manufacturing Digital thread (Graph and Generative AI) demo application.
 
 Are you sure to delete the demo application? (y/n): y
 
    Are you sure you want to delete application genai-chatbot-app? [? for help] (y/N) y
-```
 
+
+Finally, You will get a message "CloudFormation is being deleted. It will be removed in minutes. Please check the CloudFormation console https://console.aws.amazon.com/cloudformation/home". 
+
+It will take 10-15 minutes to cleanup the resources in your account.
+```
 
 ## Architecture Diagram
 
-![alt text](docs/architecture.png "Architecture Diagram of Digital Thread")
+![alt text](docs/architecture.png "Architecture Diagram - Manufacturing Digital Thread Using Graph and Generative AI on AWS")
 <details>
 <summary>Details description</summary>
 
@@ -171,18 +180,9 @@ Leverage Amazon Neptune Bulk loader capability to load the data stored in Amazon
 5. Create User interface
 Create a front end by combining Streamlit App, Amazon Elastic Container Service (ECS) with Fargate for container orchestration, Amazon Elastic Container Registry (ECR) for managing container images, Elastic Load Balancer (ELB) for efficient traffic distribution, and Amazon Cognito for secure user authentication. This comprehensive setup, orchestrated with AWS Copilot CLI, ensures a scalable, secure, and responsive user interface, facilitating a seamless user experience for stakeholders interacting with the digital thread and linked manufacturing data.
 6. Establish knowledge graph, LLM connection and orchestrate using Langchain.
-Establish the linkage between Amazon Bedrock (Claude V2), Amazon Neptune and orchestrate the integration seamlessly with Langchain. The orchestrator coordinates the entire process of generating the query from the foundation model, executing the query against the knowledge graph and return the results in natural language to the user. This step enhances the interconnectedness and interoperability of data within the manufacturing processes, promoting a more cohesive and intelligent system.
+7. Establish the linkage between Amazon Bedrock (Claude V2), Amazon Neptune and orchestrate the integration seamlessly with Langchain. The orchestrator coordinates the entire process of generating the query from the foundation model, executing the query against the knowledge graph and return the results in natural language to the user. 
 
 </details>
-
-## Details
-For additional details, please stay tune and refer to the associated blog post which will be published later.
-
-## Contributors
-
-- Shing Poon, AWS / [Email](mailto:hspoon@amazon.com) / [LinkedIn](https://www.linkedin.com/in/shing-poon-78131336/) 
-- Raja GT, AWS / [Email](mailto:gtraja@amazon.com) / [LinkedIn](https://www.linkedin.com/in/rajagt/)
-
 
 ## Security
 
@@ -193,6 +193,38 @@ For additional details, please stay tune and refer to the associated blog post w
 5. Please follow the Security in the cloud section of the shared responsibility model. [Shared Responsibility Model](https://aws.amazon.com/compliance/shared-responsibility-model/)
 
 See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
+
+## AWS Guidance
+For AWS Guidance, please visit [Guidance for Digital Thread Using Graph and Generative AI on AWS](https://aws.amazon.com/solutions/guidance/digital-thread-using-graph-and-generative-ai-on-aws/)
+
+## Blog
+Blog will be released in April 2024.
+
+## Contributors
+
+- Shing Poon, AWS / [Email](mailto:hspoon@amazon.com) / [LinkedIn](https://www.linkedin.com/in/shing-poon-78131336/) 
+- Raja GT, AWS / [Email](mailto:gtraja@amazon.com) / [LinkedIn](https://www.linkedin.com/in/rajagt/)
+
+## FAQ
+```
+1. Can i execute the cleanup-script.sh if the neptune cluster is in stopped state?
+```
+No. Cloudformation deletion will fail with the error "Db cluster neptunedbcluster is in stopped state". Please start the neptune cluster either through the aws console or cli command before proceeding.
+
+```
+2. What to do when the CloudFormation failed to create neptune cluster with the error "The following resource(s) failed to create: [ElasticIP3, ElasticIP1, ElasticIP2]"? 
+```
+Before running the Neptune Cloudformation template, ensure you have enough capacity for the creation of 3 Elastic IP's. Verify the number of Elastic IP's in the aws console https://us-west-2.console.aws.amazon.com/ec2/home?region=us-west-2#Addresses: before deploying the script.  
+
+```
+3. Can i create a new user apart from the demo_user?
+```
+Yes. You can navigate to the AWS Cognito user pool and create a new user.
+
+```
+4. I got the error "jq: command not found" while running the deploy-script.sh. How to fix?
+```
+Run the command "brew install jq". Please visit [Install jq](https://jqlang.github.io/jq/download/) page for more information
 
 ## License
 
