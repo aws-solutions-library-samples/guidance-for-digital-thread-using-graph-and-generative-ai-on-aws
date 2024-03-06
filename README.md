@@ -167,7 +167,7 @@ It will take 10-15 minutes to cleanup the resources in your account.
 
 ![alt text](docs/architecture.png "Architecture Diagram - Manufacturing Digital Thread Using Graph and Generative AI on AWS")
 <details>
-<summary>Details description</summary>
+<summary>Detailed description</summary>
 
 1. Identify key stakeholders in the manufacturing organization:
 To embark on a successful journey towards implementing cutting-edge technologies like Generative AI, graphs, and digital thread, it's essential to identify key stakeholders within the manufacturing organization. This includes design engineering, manufacturing engineering, supply chain professionals, operations teams, CXOs, and IT experts. Understanding their distinct business interests and use cases lays the foundation for a connected digital thread.
