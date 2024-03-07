@@ -255,7 +255,7 @@ Blog will be released in April 2024.
 
 7. I made minor adjustments in the existing graph by adding new edges and vertices, but the chat application doesn't seem to recognize the changes. What could be the reason for this issue?
    
-   [Langchain Graph API's](https://github.com/langchain-ai/langchain/blob/master/libs/community/langchain_community/graphs/neptune_graph.py) gets the node and edge labels from the Neptune statistics summary API's. [Neptune statistics](https://docs.aws.amazon.com/neptune/latest/userguide/neptune-dfe-statistics.html) are currently re-generated whenever either more than 10% of data in your graph has changed or when the latest statistics are more than 10 days old. To solve the problem, please run the statistics command "%statistics --mode refresh" immediately after loading any additional changes (Refer mfg-neptune-bulk-import.ipynb). 
+   [Langchain Neptune Graph](https://github.com/langchain-ai/langchain/blob/master/libs/community/langchain_community/graphs/neptune_graph.py) gets the node and edge labels from the Neptune statistics summary. [Neptune statistics](https://docs.aws.amazon.com/neptune/latest/userguide/neptune-dfe-statistics.html) are currently re-generated whenever either more than 10% of data in your graph has changed or when the latest statistics are more than 10 days old. To solve the problem, please run the statistics command "%statistics --mode refresh" immediately after loading any additional changes (Refer mfg-neptune-bulk-import.ipynb). 
 
 8. How much does Amazon Neptune and Amazon Bedrock cost?
    
