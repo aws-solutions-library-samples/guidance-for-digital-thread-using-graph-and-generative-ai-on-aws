@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-
+Description: "Create cognito user pool (SO9409)."
 Parameters:
   CognitoDomain:
     Type: String

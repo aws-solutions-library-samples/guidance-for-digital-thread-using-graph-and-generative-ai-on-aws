@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "Neptune full stack with gremlin and rd4j console",
+  "Description": "Neptune full stack with gremlin and rd4j console (SO9409)",
   "Parameters": {
     "EC2SSHKeyPairName": {
       "Description": "OPTIONAL: Name of an existing EC2 KeyPair to enable SSH access to the instances. Required only if an EC2ClientInstanceType is specified",

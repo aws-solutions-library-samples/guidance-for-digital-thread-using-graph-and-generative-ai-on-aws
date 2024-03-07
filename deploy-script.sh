@@ -8,22 +8,27 @@ if [ -z "$AWS_DEFAULT_REGION" ]; then
   exit 1
 fi
 echo ""
-echo "The application will be deployed in $AWS_DEFAULT_REGION ...."
+echo "The application will be deployed in $AWS_DEFAULT_REGION region...."
 
 echo "Checking AWS credentials...."
 stack_info=$(aws cloudformation list-stacks 2>&1)
 # $? not eq 0
 if [ $? -ne 0 ]; then
+  echo ""
   echo "Aborted....Please check your AWS credentials!!!!"
   exit 1
 fi
-echo "AWS credentials verified successfully!!!"
 
+echo ""
+echo "AWS credentials verified successfully!!!"
+echo ""
 echo "Checking docker daemon is running..."
 if (! docker stats --no-stream ); then
-  echo "Aborted....Please check docker daemon is running!!!!"
+  echo ""
+  echo "Aborted....Please check whether docker daemon is running!!!!"
   exit 1
 fi
+echo ""
 echo "docker daemon is running!!!"
 
 ACCOUNT_ID=$(aws sts get-caller-identity --output text --query Account)
@@ -35,14 +40,16 @@ echo "Step 1: Create Cognito User Pool for Manufacturing Digital Thread: Started
 
 COGNITO_STACK_NAME=mfg-dt-cognito
 COGNITO_DOMAIN_NAME=mfg-dt-$ACCOUNT_ID
-
+echo ""
 echo "Checking whether Cognito User Pool stack $COGNITO_STACK_NAME already exists...."
 # Check if the CloudFormation stack exists
 stack_info=$(aws cloudformation describe-stacks --stack-name $COGNITO_STACK_NAME 2>&1)
 # Check if the command was successful
 if [ $? -eq 0 ]; then
+  echo ""
   echo "Cognito User Pool stack $COGNITO_STACK_NAME already exists. Skipping Cognito User pool creation process..."
 else
+  echo ""
   echo "Cognito User Pool stack $COGNITO_STACK_NAME doesnot exist. $COGNITO_STACK_NAME is creating...(Takes 5 min)"
   aws cloudformation create-stack \
     --stack-name $COGNITO_STACK_NAME \
@@ -54,6 +61,7 @@ fi
 
 aws cloudformation wait stack-create-complete --stack-name $COGNITO_STACK_NAME
 if [ $? -ne 0 ]; then
+  echo ""
   echo "Aborted...Cognito User Pool stack $COGNITO_STACK_NAME creation failed. please check the errors in the AWS Cloudformation console!!!!"
   exit $?
 fi
@@ -78,11 +86,12 @@ DEMO_USER_EMAIL=demo.user@example.com
 DEMO_USER_PW='TempPassw0rd!'
 # Get the list of users with the specified username
 response=$(aws cognito-idp list-users --user-pool-id $CognitoUserPoolID --filter "username=\"$DEMO_USERNAME\"")
-
+echo ""
 echo "Creating demo user $DEMO_USERNAME in the user pool...."
 
 # Check if the Users array in the response is empty
 if [[ $response == *"Username"* ]]; then
+  echo ""
   echo "User $DEMO_USERNAME already exists in the user pool. Skipping demo user creation process..."
 else
   aws cognito-idp admin-create-user \
@@ -92,9 +101,11 @@ else
     --temporary-password $DEMO_USER_PW \
     --message-action SUPPRESS \
     --desired-delivery-mediums EMAIL
+  echo ""
   echo "Demo user $DEMO_USERNAME created successfully."
 fi
 
+echo ""
 echo "Step 1: Create Cognito User Pool for Manufacturing Digital Thread: Completed!!!!!"
 
 # Step 2: Create Amazon Netpune for MFG DigitalThread
@@ -102,14 +113,17 @@ echo ""
 echo "Step 2: Create Amazon Netpune for Manufacturing Digital Thread: Started....."
 
 NEPTUNE_STACK_NAME=mfg-dt-neptune
+echo ""
 echo "Checking whether Neptune stack $NEPTUNE_STACK_NAME already exists...."
 
 # Check if the CloudFormation stack exists
 stack_info=$(aws cloudformation describe-stacks --stack-name $NEPTUNE_STACK_NAME 2>&1)
 # Check if the command was successful
 if [ $? -eq 0 ]; then
+  echo ""
   echo "Neptune stack $NEPTUNE_STACK_NAME already exists. Skipping neptune cluster creation processs... "
 else
+  echo ""
   echo "Neptune stack $NEPTUNE_STACK_NAME is creating.... (Takes 30 min)"
   aws cloudformation create-stack \
     --stack-name $NEPTUNE_STACK_NAME \
@@ -121,9 +135,11 @@ fi
 
 aws cloudformation wait stack-create-complete --stack-name $NEPTUNE_STACK_NAME
 if [ $? -ne 0 ]; then
+  echo ""
   echo "Aborted...Neptune stack $NEPTUNE_STACK_NAME creation failed. please check the errors in the AWS Cloudformation console.. "
   exit $?
 fi
+
 
 outputs=$(aws cloudformation describe-stacks --stack-name $NEPTUNE_STACK_NAME --query "Stacks[0].Outputs") 
 DBClusterId=$(echo $outputs | jq -r '.[] | select(.OutputKey=="DBClusterId") | .OutputValue')
@@ -141,6 +157,7 @@ PublicSubnet1=$(echo $outputs | jq -r '.[] | select(.OutputKey=="PublicSubnet1")
 PublicSubnet2=$(echo $outputs | jq -r '.[] | select(.OutputKey=="PublicSubnet2") | .OutputValue')
 PublicSubnet3=$(echo $outputs | jq -r '.[] | select(.OutputKey=="PublicSubnet3") | .OutputValue')
 
+echo ""
 echo """$NEPTUNE_STACK_NAME Output:
 DBClusterId=$DBClusterId
 DBClusterPort=$DBClusterPort
@@ -157,7 +174,7 @@ PrivateSubnet1=$PrivateSubnet1
 PrivateSubnet2=$PrivateSubnet2
 PrivateSubnet3=$PrivateSubnet3
 """
-
+echo ""
 echo "Neptune stack $NEPTUNE_STACK_NAME created successfully!!!!"
 echo ""
 echo "Step 2: Create Amazon Netpune for Manufacturing Digital Thread: Completed!!!!"
@@ -193,8 +210,8 @@ copilot env init \
   --import-private-subnets $PrivateSubnet1,$PrivateSubnet2,$PrivateSubnet3 \
   --region $AWS_DEFAULT_REGION
 
+echo ""
 echo "Step 3: Init Manufacturing Digital Thread application with AWS copilot: Completed!!!!"
-
 
 ## Step 4: Deploy app with AWS copilot
 echo ""
@@ -206,7 +223,9 @@ copilot env deploy --name demo
 ## deploy service 
 copilot deploy
 
+echo ""
 echo "Step 4: Deploy Manufacturing Digital Thread application with AWS copilot: Completed!!!"
 echo ""
 echo "Manufacturing Digital thread (Graph and Generative AI) application deployed successfully!!!!"
+
 exit 0

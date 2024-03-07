@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: "Create a user equipped with permissions to create a copilot deployment stack."
+Description: "Create a user equipped with permissions to create a copilot deployment stack (SO9409)."
 Resources:
   copilotUser:
     Type: 'AWS::IAM::User'

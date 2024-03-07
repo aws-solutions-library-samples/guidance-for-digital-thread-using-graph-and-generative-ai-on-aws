@@ -36,6 +36,7 @@ To execute the steps outlined in this post, you will require the following:
     * [Install and run Docker](https://www.docker.com/get-started/)
     * [Install jq](https://jqlang.github.io/jq/download/)
 * Ensure you have enough capacity for the creation of 3 Elastic IP's.
+* The host platform should be (linux/amd64)
 
 ## Deployment
 

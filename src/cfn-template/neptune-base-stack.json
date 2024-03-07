@@ -1,5 +1,5 @@
 {
-  "Description": "Base Template to create Neptune Stack inside a VPC",
+  "Description": "Base Template to create Neptune Stack inside a VPC (SO9409)",
   "Parameters": {
     "Env": {
       "Description": "Environment tag, e.g. prod, nonprod.",
