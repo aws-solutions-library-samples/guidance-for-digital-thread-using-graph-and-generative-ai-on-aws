@@ -36,14 +36,14 @@ To execute the steps outlined in this post, you will require the following:
     * [Install and run Docker](https://www.docker.com/get-started/)
     * [Install jq](https://jqlang.github.io/jq/download/)
 * Ensure you have enough capacity for the creation of 3 Elastic IP's.
-* The host platform should be (linux/amd64)
+* The host platform should be linux/amd64.
 
 ## Deployment
 
 1. Clone the repository into your environment
     ```
-    git clone https://github.com/aws-samples/genai-mfg-digitalthread-with-neptune-kg.git
-    cd genai-mfg-digitalthread-with-neptune-kg
+    git clone https://github.com/aws-solutions-library-samples/guidance-for-digital-thread-using-graph-and-generative-ai-on-aws.git
+    cd guidance-for-digital-thread-using-graph-and-generative-ai-on-aws
     ```
 
 2. To deploy this app, run:
@@ -210,7 +210,7 @@ Blog will be released in April 2024.
 
 1. Can i execute the cleanup-script.sh if the neptune cluster is in stopped state?
 
-    No. Cloudformation deletion will fail with the error "Db cluster neptunedbcluster is in stopped state". Please start the neptune cluster either through the aws console or cli command before proceeding.
+    No. Cloudformation deletion will fail with the error "Db cluster neptunedbcluster is in stopped state". Please start the neptune cluster either through the aws console or cli command before proceeding with the cleanup.
 
 
 2. What to do when the CloudFormation failed to create neptune cluster with the error "The following resource(s) failed to create: [ElasticIP3, ElasticIP1, ElasticIP2]"? 
@@ -231,9 +231,44 @@ Blog will be released in April 2024.
 
     This error can be resolved by deploying the script from arm64 based instance. Please see the platform attribute in the manifest.yml file present under copilot/genai-chatbot-app. The platform attribute is set to linux/arm64.
 
-6. I need to know more about Amazon Neptune and Amazon Bedrock.
+6. Can this solution be adapted for use in other domains, and if so, what is the process?
+
+    Step 1: Identify domain specific customer problem.
+
+    Step 2: Identify relevant stakeholders.
+
+    Step 3: Understand the problem and create questions.
+
+    Step 4: Identify the relevant System and data. 
+
+    Step 5: Create the edges and vertices csv files and place it in the knowledge-graph/data/edges and knowledge-graph/data/vertices folders.
+
+    Step 6: Load the files using S3 loader and run the neptune statistics using src/knowledge-graph/mfg-neptune-bulk-import.ipynb
+
+    Step 7: Chat with the graph.
+
+    Step 8: If the response is inaccurate, please update the prompt template by providing an example query and the corresponding answer.
+
+    When engaging with customers to understand their needs, use the below template.
+
+     <img src="docs/template.png" alt="Graph" width="500" height="auto">
+
+7. I made minor adjustments in the existing graph by adding new edges and vertices, but the chat application doesn't seem to recognize the changes. What could be the reason for this issue?
+   
+   [Langchain Graph API's](https://github.com/langchain-ai/langchain/blob/master/libs/community/langchain_community/graphs/neptune_graph.py) gets the node and edge labels from the Neptune statistics summary API's. [Neptune statistics](https://docs.aws.amazon.com/neptune/latest/userguide/neptune-dfe-statistics.html) are currently re-generated whenever either more than 10% of data in your graph has changed or when the latest statistics are more than 10 days old. To solve the problem, please run the statistics command "%statistics --mode refresh" immediately after loading any additional changes (Refer mfg-neptune-bulk-import.ipynb). 
+
+8. How much does Amazon Neptune and Amazon Bedrock cost?
+   
+   Please refer the [Neptune Serverless pricing](https://aws.amazon.com/neptune/pricing/) and [Amazon Bedrock Pricing](https://aws.amazon.com/bedrock/pricing/) for Anthropic models.
+
+9. In which AWS Regions is Amazon Bedrock available?
+
+    Please refer this [page](https://docs.aws.amazon.com/general/latest/gr/bedrock.html) for more details.
+
+10. I need to know more about Amazon Neptune and Amazon Bedrock.
 
     Please see the [Amazon Bedrock](https://aws.amazon.com/bedrock/) and [Amazon Neptune](https://aws.amazon.com/neptune/) product page for more information.
+
 
 ## License
 
