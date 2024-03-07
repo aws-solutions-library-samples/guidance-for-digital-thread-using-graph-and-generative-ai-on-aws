@@ -261,9 +261,9 @@ Blog will be released in April 2024.
 
    Please follow the "Workbench magic commands" outlined in this [blog](https://aws.amazon.com/blogs/database/resetting-your-graph-data-in-amazon-neptune-in-seconds/).
 
-9. What is the procedure for stopping the Neptune cluster and workbench to avoid incurring costs?
+9. What is the procedure for stopping the Neptune cluster and notebook to avoid incurring costs?
 
-   It is a best practice to stop the Neptune cluster and workbench when you are not using it. Follow the steps outlined below.
+   It is a best practice to stop the Neptune cluster and notebook when you are not using it. Follow the steps outlined below.
 
    <img src="docs/neptune_stop.png" alt="neptune_stop" width="500" height="auto">
 
