@@ -251,21 +251,33 @@ Blog will be released in April 2024.
 
     When engaging with customers to understand their needs, use the below template.
 
-     <img src="docs/template.png" alt="Graph" width="500" height="auto">
+     <img src="docs/template.png" alt="template" width="500" height="auto">
 
 7. I made minor adjustments in the existing graph by adding new edges and vertices, but the chat application doesn't seem to recognize the changes. What could be the reason for this issue?
    
    [Langchain Neptune Graph](https://github.com/langchain-ai/langchain/blob/master/libs/community/langchain_community/graphs/neptune_graph.py) gets the node and edge labels from the Neptune statistics summary. [Neptune statistics](https://docs.aws.amazon.com/neptune/latest/userguide/neptune-dfe-statistics.html) are currently re-generated whenever either more than 10% of data in your graph has changed or when the latest statistics are more than 10 days old. To solve the problem, please run the statistics command "%statistics --mode refresh" immediately after loading any additional changes (Refer mfg-neptune-bulk-import.ipynb). 
 
-8. How much does Amazon Neptune and Amazon Bedrock cost?
-   
-   Please refer the [Neptune Serverless pricing](https://aws.amazon.com/neptune/pricing/) and [Amazon Bedrock Pricing](https://aws.amazon.com/bedrock/pricing/) for Anthropic models.
+8. How do i reset neptune DB?
 
-9. In which AWS Regions is Amazon Bedrock available?
+   Please follow the "Workbench magic commands" outlined in this [blog](https://aws.amazon.com/blogs/database/resetting-your-graph-data-in-amazon-neptune-in-seconds/).
+
+9. What is the procedure for stopping the Neptune cluster and workbench to avoid incurring costs?
+
+   It is a best practice to stop the Neptune cluster and workbench when you are not using it. Follow the steps outlined below.
+
+   <img src="docs/neptune_stop.png" alt="neptune_stop" width="500" height="auto">
+
+   <img src="docs/notebook_stop.png" alt="notebook_stop" width="500" height="auto">
+
+10. How much does Amazon Neptune and Amazon Bedrock cost?
+   
+    Please refer the [Neptune Serverless pricing](https://aws.amazon.com/neptune/pricing/) and [Amazon Bedrock Pricing](https://aws.amazon.com/bedrock/pricing/) for Anthropic models.
+
+11. In which AWS Regions is Amazon Bedrock available?
 
     Please refer this [page](https://docs.aws.amazon.com/general/latest/gr/bedrock.html) for more details.
 
-10. I need to know more about Amazon Neptune and Amazon Bedrock.
+12. I need to know more about Amazon Neptune and Amazon Bedrock.
 
     Please see the [Amazon Bedrock](https://aws.amazon.com/bedrock/) and [Amazon Neptune](https://aws.amazon.com/neptune/) product page for more information.
 
