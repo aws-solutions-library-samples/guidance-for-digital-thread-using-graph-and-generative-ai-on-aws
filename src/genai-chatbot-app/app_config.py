@@ -56,34 +56,35 @@ Helpful Answer:"""
     EXAMPLE_QUERY = '''
 ##### Traceability
             
-1. Tell me about the defect QC-1234-1?
-2. [Follow-up] list the part, requirement and documents associated with the defect QC-1234-1?
-3. [Follow-Up] what is the production order associated with the defect QC-1234-1?
-4. [Follow-Up] Give me the fmea details for the quality defect QC-1234-1?
+1. Tell me about the quality defect QC-1234-1?
+2. List the part, requirement and documents associated with the defect QC-1234-1?
+3. Give me the requirements for the part Turbo-Motor-11234.
+4. What is the production order associated with the defect QC-1234-1?
+5. Give me the FMEA details for the quality defect QC-1234-1?
 
 ##### Supplier Quality
 1. Who are the suppliers for the part Turbo-Motor-11234?
-2. [Follow-up] Which supplier is recommended for part Turbo-Motor-11234 based on quality score?
-3. [Follow-up] What is the lead time and corrective action response time for Max Holdings?
-4. [Follow-up] Do you have a SOP? please provide me the SOP url.
+2. Which supplier is recommended for part Turbo-Motor-11234 based on highest quality score?
+3. What is the lead time and corrective action response time for Max Holdings?
+4. Do you have a SOP? please provide me the SOP url.
 
 ##### Sustainability
 1. Can you provide the lca, pcf and scope3 emissions data for the part Turbo-Motor-11234?
-2. [Follow-up] What is the supply chain transparency index for the part Turbo-Motor-11234?
+2. What is the supply chain transparency index for the part Turbo-Motor-11234?
 
 ##### Access
 1. Who can access the project Turbo-Project?
-2. [Follow-up] Can Emily access the project Turbo-Project?
-3. [Follow-up] Can Lee access the project Turbo-Project?
+2. Can Emily access the project Turbo-Project?
+3. What is the status of the project Turbo-Project?
                     
 ##### Predictive Maintenance
 1. When is the next scheduled maintenance for the part Turbo-Motor-11234?
-2. [Follow-up] Are there any anomalies detected for the part Turbo-Motor-11234?
-3. [Follow-up] Any historical trend suggestions for the part Turbo-Motor-11234?
+2. Are there any anomalies detected for the part Turbo-Motor-11234?
+3. Any historical trend suggestions for the part Turbo-Motor-11234?
                     
 '''
 
-    app_description = "Manufacturing organizations have vast amounts of knowledge dispersed across the product lifecycle, which can result in limited visibility, knowledge gaps, and the inability to continuously improve. A digital thread offers an integrated approach to combine disparate data sources across enterprise systems to drive traceability, accessibility, collaboration, and agility. In this chalk talk, learn how to create an intelligent manufacturing digital thread using a combination of knowledge graph and generative AI technologies based on data generated throughout the product lifecycle, and their interconnected relationship. Explore use cases and discover actionable steps to start your intelligent digital thread journey."
+    app_description = "Manufacturing organizations have vast amounts of knowledge dispersed across the product lifecycle, which can result in limited visibility, knowledge gaps, and the inability to continuously improve. A digital thread offers an integrated approach to combine disparate data sources across enterprise systems to drive traceability, accessibility, collaboration, and agility. In this demo, learn how to create an intelligent manufacturing digital thread using a combination of knowledge graph and generative AI technologies based on data generated throughout the product lifecycle, and their interconnected relationship. Explore use cases and discover actionable steps to start your intelligent digital thread journey."
 
     @staticmethod
     def get_cypher_custom_template():

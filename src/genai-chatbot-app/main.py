@@ -90,7 +90,7 @@ def build_sidebar():
 
 ## build main UI using streamlit 
 def build_ui():
-    st.header("Ask your Manufacturing digital thread advisor 💬 🧠")
+    st.header("Ask your digital thread advisor 💬 🧠")
     with st.expander("Building Manufacturing Digital Thread Using Graph and Generative AI on AWS"):
         st.markdown(app_config.get_app_description())
     with st.expander('Sample questions'):
