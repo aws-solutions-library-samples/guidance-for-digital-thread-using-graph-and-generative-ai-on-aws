@@ -4,10 +4,9 @@ import boto3
 
 class LLMFactory:
     def __init__(self):
-        # Setup bedrock (assume you have enabled anthropic.claude-v2 in Amazon Bedrock at us-east-1 region)
+        # Setup bedrock (assume you have enabled anthropic.claude-v2 in Amazon Bedrock at the region)
         self.bedrock_runtime = boto3.client(
         service_name="bedrock-runtime",
-        region_name="us-east-1",
     ) 
 
     def create_llm(self, llm_model):

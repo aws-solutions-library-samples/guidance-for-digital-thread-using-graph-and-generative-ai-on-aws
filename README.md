@@ -36,7 +36,7 @@ To execute the steps outlined in this post, you will require the following:
     * [Install and run Docker](https://www.docker.com/get-started/)
     * [Install jq](https://jqlang.github.io/jq/download/)
 * Ensure you have enough capacity for the creation of 3 Elastic IP's.
-* The host platform should be linux/amd64.
+* The host platform should be linux/x86_64.
 
 ## Deployment
 
@@ -103,7 +103,7 @@ Newly deployed Amazon Neptune clusters does not contain any data. To showcase th
     3. Select the stack `mfg-dt-neptune`
     4. In the right pane, select **Outputs** tab
     5. Find `NeptuneSagemakerNotebook` Key to find the URL of the Neptune Sagemaker Notebook.
-    (e.g. https://aws-neptune-notebook-for-neptunedbcluster-xxxxxxxx.notebook.us-east-1.sagemaker.aws/)
+    (e.g. https://aws-neptune-notebook-for-neptunedbcluster-xxxxxxxx.notebook.xx-xxxx-x.sagemaker.aws/)
 
 3. After you go into Jupyter notebook, click on `Upload` button on the right top corner and upload [src/knowledge-graph/mfg-neptune-bulk-import.ipynb](src/knowledge-graph/mfg-neptune-bulk-import.ipynb) file into the Neptune notebook. (PS: click `upload` blue button to confirm uploading)
 

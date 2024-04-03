@@ -4,7 +4,7 @@ echo "This script is to deploy the Manufacturing Digital thread (Graph and Gener
 # check if AWS_DEFAULT_REGION exist in env
 if [ -z "$AWS_DEFAULT_REGION" ]; then
   echo "Aborted....AWS_DEFAULT_REGION is not set!!!!"
-  echo "> export AWS_DEFAULT_REGION=us-east-1"
+  echo "> export AWS_DEFAULT_REGION=xx-xxxx-xx"
   exit 1
 fi
 echo ""
@@ -197,6 +197,7 @@ NEPTUNE_PORT=${DBClusterPort}
 COGNITO_POOL_ID=${CognitoUserPoolID}
 COGNITO_APP_CLIENT_ID=${CognitoAppClientID}
 COGNITO_APP_CLIENT_SECRET=${CognitoAppClientSecret}
+AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
 EOF
 
 ## init app with AWS 

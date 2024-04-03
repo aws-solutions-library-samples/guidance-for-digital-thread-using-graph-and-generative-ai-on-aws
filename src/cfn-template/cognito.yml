@@ -51,7 +51,5 @@ Outputs:
     Value:
       !GetAtt UserPoolClient.ClientSecret
     Description: The app secret
-  HostedUIURL:
-    Value: !Sub https://${CognitoDomain}.auth.us-east-1.amazoncognito.com/login?client_id=${UserPoolClient}&response_type=code&scope=email+openid+phone+profile&redirect_uri=http://localhost:3000
-    Description: The hosted UI URL
+
   
