@@ -215,7 +215,7 @@ Blog will be released in April 2024.
 
 2. What to do when the CloudFormation failed to create neptune cluster with the error "The following resource(s) failed to create: [ElasticIP3, ElasticIP1, ElasticIP2]"? 
 
-    Before running the Neptune Cloudformation template, ensure you have enough capacity for the creation of 3 Elastic IP's. Verify the number of Elastic IP's in the aws console https://us-west-2.console.aws.amazon.com/ec2/home?region=us-west-2#Addresses: before deploying the script.  
+    Before running the Neptune Cloudformation template, ensure you have enough capacity for the creation of 3 Elastic IP's. Verify the number of Elastic IP's in the aws console https://console.aws.amazon.com/ec2/home?#Addresses: before deploying the script.  
 
 
 3. Can i create a new user apart from the demo_user?

@@ -41,7 +41,7 @@ if [ $? -eq 0 ]; then
     IS_STACK_EXIST=true
     echo "Neptune Stack $NEPTUNE_STACK_NAME exists. Neptune resources will be deleted. Delete stack started..."
     aws cloudformation delete-stack --stack-name $NEPTUNE_STACK_NAME
-    echo "CloudFormation Neptune Stack $NEPTUNE_STACK_NAME is being deleted. It will be removed in minutes."
+    echo "CloudFormation Neptune Stack $NEPTUNE_STACK_NAME is being deleted."
 fi
 
 # Check if the CloudFormation stack exists
@@ -51,7 +51,7 @@ if [ $? -eq 0 ]; then
     IS_STACK_EXIST=true
     echo "Cognito Stack $COGNITO_STACK_NAME exists. Delete stack started..."
     aws cloudformation delete-stack --stack-name $COGNITO_STACK_NAME
-    echo "CloudFormation Cognito Stack $COGNITO_STACK_NAME is being deleted. It will be removed in minutes."
+    echo "CloudFormation Cognito Stack $COGNITO_STACK_NAME is being deleted."
 fi
 
 # Check if the CloudFormation stack exists
@@ -61,12 +61,17 @@ if [ $? -eq 0 ]; then
     IS_STACK_EXIST=true
     echo "IAM Stack $IAM_STACK_NAME exists. Delete stack started..."
     aws cloudformation delete-stack --stack-name $IAM_STACK_NAME
-    echo "CloudFormation IAM Stack $IAM_STACK_NAME is being deleted. It will be removed in minutes."
+    echo "CloudFormation IAM Stack $IAM_STACK_NAME is being deleted."
 fi
 
 if [ $IS_STACK_EXIST = true ]; then
     echo "CloudFormation is being deleted. It will be removed in minutes. Please check the CloudFormation console https://console.aws.amazon.com/cloudformation/home"
+    aws cloudformation wait stack-delete-complete --stack-name $IAM_STACK_NAME
+    aws cloudformation wait stack-delete-complete --stack-name $COGNITO_STACK_NAME
+    aws cloudformation wait stack-delete-complete --stack-name $NEPTUNE_STACK_NAME
 fi
+
+echo "Clean up completed".
 
 exit 0
 
