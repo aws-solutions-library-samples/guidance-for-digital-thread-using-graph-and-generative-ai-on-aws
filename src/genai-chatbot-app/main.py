@@ -5,10 +5,11 @@ from app_config import AppConfig
 from database_connection import DatabaseConnection
 from llm_factory import LLMFactory
 from qa_chain import QAChain
-from langchain.prompts.prompt import PromptTemplate
 from streamlit_cognito_auth import CognitoAuthenticator
 
 import logging
+from langchain_core.prompts import PromptTemplate
+
 logging.basicConfig(encoding='utf-8', level=logging.INFO)
 
 # Set langchain debug mode
@@ -73,7 +74,7 @@ def build_sidebar():
             
         st.divider()
 
-        model_list = ('anthropic.claude-v2',)
+        model_list = ('anthropic.claude-v2.1','anthropic.claude-3-haiku-20240307-v1:0')
         st.selectbox("Pick the LLM", model_list, index=0, key="llm_model")
         st.divider()
 
@@ -159,7 +160,7 @@ def logout():
     login()
     
 def reset_session():
-    st.session_state["llm_model"] = "anthropic.claude-v2"
+    st.session_state["llm_model"] = "anthropic.claude-3-haiku-20240307-v1:0"
     st.session_state["neptune_host"] = app_config.get_neptune_host()
     st.session_state["neptune_port"] = app_config.get_neptune_port()
     st.session_state["cypher_custom_template"] = app_config.get_cypher_custom_template()
@@ -175,7 +176,7 @@ if __name__ == "__main__":
 
     # Set a default session values
     if ("llm_model" not in st.session_state) or (not st.session_state["llm_model"]):
-        st.session_state["llm_model"] = "anthropic.claude-v2"
+        st.session_state["llm_model"] = "anthropic.claude-3-haiku-20240307-v1:0"
     if ("neptune_host" not in st.session_state) or (not st.session_state["neptune_host"]):
         st.session_state["neptune_host"] = app_config.get_neptune_host()
     if ("neptune_port" not in st.session_state) or (not st.session_state["neptune_port"]):

@@ -1,6 +1,6 @@
-from langchain.graphs import NeptuneGraph
 
 import logging
+from langchain_community.graphs import NeptuneGraph
 
 class DatabaseConnection:
     def __init__(self, host, port, use_https):
