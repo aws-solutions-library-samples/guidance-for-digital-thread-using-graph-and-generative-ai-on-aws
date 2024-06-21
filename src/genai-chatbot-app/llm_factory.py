@@ -9,27 +9,45 @@ class LLMFactory:
         self.bedrock_runtime = boto3.client(
         service_name="bedrock-runtime",
     ) 
+        
 
     def create_llm(self, llm_model):
-        if llm_model == 'anthropic.claude-v2.1':
-            inference_modifier = {'max_tokens_to_sample': 4096, 
-                                  "temperature": 0.01,
-                                  "top_k": 250,
-                                  "top_p": 1,
-                                  "stop_sequences": ["\n\nHuman"]}
-            llm = ChatBedrock(model_id="anthropic.claude-v2.1",
+        inference_modifier = {"temperature": 0.01}
+        # inference_modifier = {"temperature": 0.01,
+        #                     "top_k": 250,
+        #                     "top_p": 1,
+        #                     "stop_sequences": ["\n\nHuman"]}
+    
+        model_list = ('Claude 2.1',
+                      'Claude 3 Sonnet',
+                      'Llama 3 70b Instruct',
+                      'Mistral Large'
+                      )
+
+        if llm_model == 'Claude 2.1':
+            model_id = 'anthropic.claude-v2:1'
+        elif llm_model == 'Claude 3 Sonnet':
+            model_id = 'anthropic.claude-3-sonnet-20240229-v1:0'
+        elif llm_model == 'Llama 3 70b Instruct':
+            model_id = 'meta.llama3-70b-instruct-v1:0'
+        elif llm_model == 'Mistral Large':
+            model_id = 'mistral.mistral-large-2402-v1:0'
+        else:
+            model_id = ''
+
+        model_id_list = ('anthropic.claude-v2',
+                      'anthropic.claude-v2:1',
+                      'anthropic.claude-3-haiku-20240307-v1:0', 
+                      'anthropic.claude-3-sonnet-20240229-v1:0',
+                      'meta.llama3-8b-instruct-v1:0',
+                      'meta.llama3-70b-instruct-v1:0',
+                      'mistral.mistral-large-2402-v1:0',
+                      'mistral.mixtral-8x7b-instruct-v0:1'
+                      )
+        if model_id in model_id_list:
+            llm = ChatBedrock(model_id=model_id,
                           client=self.bedrock_runtime, 
                           model_kwargs=inference_modifier)
-        elif llm_model == 'anthropic.claude-3-haiku-20240307-v1:0':
-            inference_modifier = {'max_tokens_to_sample': 4096, 
-                                  "temperature": 0.01,
-                                  "top_k": 250,
-                                  "top_p": 1,
-                                  "stop_sequences": ["\n\nHuman"]}
-            llm = ChatBedrock(model_id="anthropic.claude-3-haiku-20240307-v1:0",
-                          client=self.bedrock_runtime, 
-                          model_kwargs=inference_modifier)
-        
         else:
             st.error('LLM not supported yet')
             st.stop()

@@ -1,6 +1,6 @@
 import streamlit as st
 import time
-import boto3
+import re
 from app_config import AppConfig
 from database_connection import DatabaseConnection
 from llm_factory import LLMFactory
@@ -74,7 +74,11 @@ def build_sidebar():
             
         st.divider()
 
-        model_list = ('anthropic.claude-v2.1','anthropic.claude-3-haiku-20240307-v1:0')
+        model_list = ('Claude 2.1',
+                      'Claude 3 Sonnet',
+                      'Llama 3 70b Instruct',
+                      'Mistral Large'
+                      )
         st.selectbox("Pick the LLM", model_list, index=0, key="llm_model")
         st.divider()
 
@@ -129,7 +133,8 @@ def build_ui():
             full_response = ""
 
             # Simulate stream of response with milliseconds delay
-            for chunk in output.split():
+            # for chunk in output.split():
+            for chunk in re.split(r'(\s+)', output):
                 full_response += chunk + " "
                 time.sleep(0.02)
                 # Add a blinking cursor to simulate typing

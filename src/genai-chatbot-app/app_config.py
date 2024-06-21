@@ -9,30 +9,37 @@ class AppConfig:
     cognito_app_client_id = os.environ.get("COGNITO_APP_CLIENT_ID")
     cognito_app_client_secret = os.environ.get("COGNITO_APP_CLIENT_SECRET")
     
-    CYPHER_CUSTOM_TEMPLATE = """Instructions:
+    CYPHER_CUSTOM_TEMPLATE = """<Instructions>
 Generate the query in openCypher format and follow these rules:
-Do not use `NONE`, `ALL` or `ANY` predicate functions, rather use list comprehensions.
-Do not use `REDUCE` function. Rather use a combination of list comprehension and the `UNWIND` clause to achieve similar results.
-Do not use `FOREACH` clause. Rather use a combination of `WITH` and `UNWIND` clauses to achieve similar results.
-Use only the provided relationship types and properties in the schema.
-Do not use any other relationship types or properties that are not provided.
-Do not use new line.
+1. Use undirected relationship for MATCH query.
+2. Do not use `NONE`, `ALL` or `ANY` predicate functions, rather use list comprehensions.
+3. Do not use `REDUCE` function. Rather use a combination of list comprehension and the `UNWIND` clause to achieve similar results.
+4. Do not use `FOREACH` clause. Rather use a combination of `WITH` and `UNWIND` clauses to achieve similar results.
+5. Use only the provided relationship types and properties in the schema.
+6. Do not use any other relationship types or properties that are not provided.
+7. Do not use new line.
+</Instructions>
 
-schema:
+<schema>
 {schema}
-Cypher examples:
-# Please follow the examples below. 
+<schema>
+
+<example>
 question: can Emily access the project Turbo-Project?
-context: MATCH (p:Project {{name: 'Turbo-Project'}})-[r:team_member]->(e:Employee {{name: 'Emily'}}) RETURN r.access
-results: Yes. Emily can access the project. 
-
+cypher: MATCH (p:Project {{name: 'Turbo-Project'}})-[r:team_member]->(e:Employee {{name: 'Emily'}}) RETURN r.access
+</example>
+<example>
 question: can Thomas access the project Turbo-Project?
-context: MATCH (p:Project {{name: 'Turbo-Project'}})-[r:team_member]->(e:Employee {{name: 'Thomas'}})RETURN r.access
-results: No. Thomas cannot access the project. 
-
+cypher: MATCH (p:Project {{name: 'Turbo-Project'}})-[r:team_member]->(e:Employee {{name: 'Thomas'}})RETURN r.access
+</example>
+<example>
 question: can you list the requirement, part and documents associated with the defect QC-1234-1?
-context: MATCH (qc:QualityDefect {{name: "QC-1234-1"}})<-[:quality_defect]-(op:Operation)<-[:operation]-(po:ProductionOrder)<-[:production_order]-(part:Part)-[:specification|allocation_by_requirements]->(node) WHERE ((node:Requirement AND toLower(node.description) CONTAINS "rpm") OR (node:Document AND toLower(node.name) CONTAINS "cad")) RETURN node.name AS node_name,nCASE WHEN node:Requirement THEN node.description END AS req_desc, CASE WHEN node:Requirement THEN node.name END AS req_name, CASE WHEN node:Document THEN node.name END AS doc_name, CASE WHEN node:Document THEN node.description END AS doc_description, part.name AS part_name
-results: The requirement associated with the defect QC-1234-1 is Technical-Requirement-2 and the description is The turbo motor should have an rpm of 10000. The Part associated with the defect is Turbo-Motor-11234.\n The documents associated with the defect is CAD Model and the description is CAD Model for Turbo Motor' 
+cypher: MATCH (qc:QualityDefect {{name: "QC-1234-1"}})<-[:quality_defect]-(op:Operation)<-[:operation]-(po:ProductionOrder)<-[:production_order]-(part:Part)-[:specification|allocation_by_requirements]->(node) WHERE ((node:Requirement AND toLower(node.description) CONTAINS "rpm") OR (node:Document AND toLower(node.name) CONTAINS "cad")) RETURN node.name AS node_name,nCASE WHEN node:Requirement THEN node.description END AS req_desc, CASE WHEN node:Requirement THEN node.name END AS req_name, CASE WHEN node:Document THEN node.name END AS doc_name, CASE WHEN node:Document THEN node.description END AS doc_description, part.name AS part_name
+</example>
+<example>
+question: Who are the suppliers for the part Turbo-Motor-11234?
+cypher: MATCH (p:Part {{name: 'Turbo-Motor-11234'}})-[:supplied_by]-(s:Supplier) RETURN s.name AS supplier_name 
+</example>
 
 Note: Do not include any explanations or apologies in your responses.
 Do not respond to any questions that might ask anything else than for you to construct a Cypher statement.
@@ -57,10 +64,9 @@ Helpful Answer:"""
 ##### Traceability
             
 1. Tell me about the quality defect QC-1234-1?
-2. List the part, requirement and documents associated with the defect QC-1234-1?
+2. List the part and documents associated with the defect QC-1234-1.
 3. Give me the requirements for the part Turbo-Motor-11234.
 4. What is the production order associated with the defect QC-1234-1?
-5. Give me the FMEA details for the quality defect QC-1234-1?
 
 ##### Supplier Quality
 1. Who are the suppliers for the part Turbo-Motor-11234?
