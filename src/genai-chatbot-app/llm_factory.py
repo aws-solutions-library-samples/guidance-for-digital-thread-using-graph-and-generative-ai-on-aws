@@ -1,5 +1,6 @@
 import streamlit as st
 import boto3
+from app_config import AppConfig
 # from langchain_community.llms import Bedrock
 from langchain_aws import ChatBedrock
 
@@ -18,11 +19,7 @@ class LLMFactory:
         #                     "top_p": 1,
         #                     "stop_sequences": ["\n\nHuman"]}
     
-        model_list = ('Claude 2.1',
-                      'Claude 3 Sonnet',
-                      'Llama 3 70b Instruct',
-                      'Mistral Large'
-                      )
+        model_list = AppConfig().get_model_list()
 
         if llm_model == 'Claude 2.1':
             model_id = 'anthropic.claude-v2:1'

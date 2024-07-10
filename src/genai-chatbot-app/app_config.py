@@ -9,6 +9,13 @@ class AppConfig:
     cognito_app_client_id = os.environ.get("COGNITO_APP_CLIENT_ID")
     cognito_app_client_secret = os.environ.get("COGNITO_APP_CLIENT_SECRET")
     
+    model_list = (
+                  #'Claude 2.1',
+                  'Claude 3 Sonnet',
+                  #'Llama 3 70b Instruct',
+                  #'Mistral Large'
+                  )
+    
     CYPHER_CUSTOM_TEMPLATE = """<Instructions>
 Generate the query in openCypher format and follow these rules:
 1. Use undirected relationship for MATCH query.
@@ -127,7 +134,10 @@ Helpful Answer:"""
     @staticmethod
     def get_cognito_app_client_secret():
         return AppConfig.cognito_app_client_secret
-    
+        
+    @staticmethod
+    def get_model_list():
+        return AppConfig.model_list
 
 
 

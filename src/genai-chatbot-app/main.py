@@ -74,11 +74,8 @@ def build_sidebar():
             
         st.divider()
 
-        model_list = ('Claude 2.1',
-                      'Claude 3 Sonnet',
-                      'Llama 3 70b Instruct',
-                      'Mistral Large'
-                      )
+        model_list = app_config.get_model_list()
+        
         st.selectbox("Pick the LLM", model_list, index=0, key="llm_model")
         st.divider()
 
@@ -165,7 +162,7 @@ def logout():
     login()
     
 def reset_session():
-    st.session_state["llm_model"] = "anthropic.claude-3-haiku-20240307-v1:0"
+    st.session_state["llm_model"] = "Claude 3 Sonnet"
     st.session_state["neptune_host"] = app_config.get_neptune_host()
     st.session_state["neptune_port"] = app_config.get_neptune_port()
     st.session_state["cypher_custom_template"] = app_config.get_cypher_custom_template()
@@ -181,7 +178,7 @@ if __name__ == "__main__":
 
     # Set a default session values
     if ("llm_model" not in st.session_state) or (not st.session_state["llm_model"]):
-        st.session_state["llm_model"] = "anthropic.claude-3-haiku-20240307-v1:0"
+        st.session_state["llm_model"] = "Claude 3 Sonnet"
     if ("neptune_host" not in st.session_state) or (not st.session_state["neptune_host"]):
         st.session_state["neptune_host"] = app_config.get_neptune_host()
     if ("neptune_port" not in st.session_state) or (not st.session_state["neptune_port"]):
