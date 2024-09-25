@@ -11,7 +11,8 @@ class AppConfig:
     
     model_list = (
                   #'Claude 2.1',
-                  'Claude 3 Sonnet',
+                  #'Claude 3 Sonnet',
+                  'Claude 3.5 Sonnet',
                   #'Llama 3 70b Instruct',
                   #'Mistral Large'
                   )

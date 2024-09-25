@@ -6,7 +6,7 @@ from langchain_aws import ChatBedrock
 
 class LLMFactory:
     def __init__(self):
-        # Setup bedrock (assume you have enabled anthropic.claude-v2 in Amazon Bedrock at the region)
+        # Setup bedrock 
         self.bedrock_runtime = boto3.client(
         service_name="bedrock-runtime",
     ) 
@@ -25,6 +25,8 @@ class LLMFactory:
             model_id = 'anthropic.claude-v2:1'
         elif llm_model == 'Claude 3 Sonnet':
             model_id = 'anthropic.claude-3-sonnet-20240229-v1:0'
+        elif llm_model == 'Claude 3.5 Sonnet':
+            model_id = 'anthropic.claude-3-5-sonnet-20240620-v1:0'
         elif llm_model == 'Llama 3 70b Instruct':
             model_id = 'meta.llama3-70b-instruct-v1:0'
         elif llm_model == 'Mistral Large':
@@ -36,6 +38,7 @@ class LLMFactory:
                       'anthropic.claude-v2:1',
                       'anthropic.claude-3-haiku-20240307-v1:0', 
                       'anthropic.claude-3-sonnet-20240229-v1:0',
+                      'anthropic.claude-3-5-sonnet-20240620-v1:0',
                       'meta.llama3-8b-instruct-v1:0',
                       'meta.llama3-70b-instruct-v1:0',
                       'mistral.mistral-large-2402-v1:0',
