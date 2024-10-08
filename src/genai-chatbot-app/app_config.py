@@ -71,8 +71,8 @@ Helpful Answer:"""
     EXAMPLE_QUERY = '''
 ##### Traceability
             
-1. Tell me about the quality defect QC-1234-1?
-2. List the part and documents associated with the defect QC-1234-1.
+1. Tell me about the quality defect QC-1234-1. I want to know about the impacted part and the technical requirement as well.
+2. List the documents associated with the part Turbo-Motor-11234.
 3. Give me the requirements for the part Turbo-Motor-11234.
 4. What is the production order associated with the defect QC-1234-1?
 
@@ -89,11 +89,11 @@ Helpful Answer:"""
 ##### Access
 1. Who can access the project Turbo-Project?
 2. Can Emily access the project Turbo-Project?
-3. What is the status of the project Turbo-Project?
+3. What is the current status of the project Turbo-Project?
                     
 ##### Predictive Maintenance
 1. When is the next scheduled maintenance for the part Turbo-Motor-11234?
-2. Are there any anomalies detected for the part Turbo-Motor-11234?
+2. Are there any anomalies detected for the turbo motor?
 3. Any historical trend suggestions for the part Turbo-Motor-11234?
                     
 '''
