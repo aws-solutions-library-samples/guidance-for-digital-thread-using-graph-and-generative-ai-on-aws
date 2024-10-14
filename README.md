@@ -29,7 +29,7 @@ In this sample project, learn how to create an intelligent manufacturing digital
 To execute the steps outlined in this post, you will require the following:
 
 * An AWS account – [how to create a new AWS account](https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/)
-* Access corresponding Foundation Models in Amazon Bedrock - [how to manage model access in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html)
+* Access corresponding Foundation Models in Amazon Bedrock - [how to manage model access in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html).
 * Create and configure the local environment
     * [Configure AWS credentials](https://aws.github.io/copilot-cli/docs/credentials/)
     * [Install AWS Copilot](https://aws.github.io/copilot-cli/docs/getting-started/install/)
@@ -181,7 +181,7 @@ Leverage Amazon Neptune Bulk loader capability to load the data stored in Amazon
 5. Create User interface
 Create a front end by combining Streamlit App, Amazon Elastic Container Service (ECS) with Fargate for container orchestration, Amazon Elastic Container Registry (ECR) for managing container images, Elastic Load Balancer (ELB) for efficient traffic distribution, and Amazon Cognito for secure user authentication. This comprehensive setup, orchestrated with AWS Copilot CLI, ensures a scalable, secure, and responsive user interface, facilitating a seamless user experience for stakeholders interacting with the digital thread and linked manufacturing data.
 6. Establish knowledge graph, LLM connection and orchestrate using Langchain.
-7. Establish the linkage between Amazon Bedrock (Claude 3 Sonnet), Amazon Neptune and orchestrate the integration seamlessly with Langchain. The orchestrator coordinates the entire process of generating the query from the foundation model, executing the query against the knowledge graph and return the results in natural language to the user. 
+7. Establish the linkage between Amazon Bedrock (Claude 3.5 Sonnet), Amazon Neptune and orchestrate the integration seamlessly with Langchain. The orchestrator coordinates the entire process of generating the query from the foundation model, executing the query against the knowledge graph and return the results in natural language to the user. 
 
 </details>
 
