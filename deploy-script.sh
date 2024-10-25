@@ -100,7 +100,8 @@ else
     --user-attributes Name=name,Value=DemoUser Name=email,Value=$DEMO_USER_EMAIL Name=email_verified,Value=true \
     --temporary-password $DEMO_USER_PW \
     --message-action SUPPRESS \
-    --desired-delivery-mediums EMAIL
+    --desired-delivery-mediums EMAIL \
+    --output text
   echo ""
   echo "Demo user $DEMO_USERNAME created successfully."
 fi
