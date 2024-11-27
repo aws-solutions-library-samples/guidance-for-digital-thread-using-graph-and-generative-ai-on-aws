@@ -79,8 +79,9 @@ Helpful Answer:"""
 ##### Supplier Quality
 1. Who are the suppliers for the part Turbo-Motor-11234?
 2. Which supplier is recommended for part Turbo-Motor-11234 based on highest quality score?
-3. What is the lead time and corrective action response time for Max Holdings?
-4. Do you have a SOP? please provide me the SOP url.
+3. Can you provide some information about the supplier Max Holdings?
+4. What is the lead time and corrective action response time for Max Holdings?
+5. Do you have a SOP? please provide me the SOP url.
 
 ##### Sustainability
 1. Can you provide the lca, pcf and scope3 emissions data for the part Turbo-Motor-11234?
@@ -93,7 +94,7 @@ Helpful Answer:"""
                     
 ##### Predictive Maintenance
 1. When is the next scheduled maintenance for the part Turbo-Motor-11234?
-2. Are there any anomalies detected for the turbo motor?
+2. Are there any anomalies detected for the part Turbo-Motor-11234?
 3. Any historical trend suggestions for the part Turbo-Motor-11234?
                     
 '''
