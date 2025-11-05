@@ -129,7 +129,7 @@ else
   aws cloudformation create-stack \
     --stack-name $NEPTUNE_STACK_NAME \
     --template-body file://$(pwd)/src/cfn-template/neptune-full-stack-nested-template.json \
-    --parameters ParameterKey=DBClusterId,ParameterValue="" ParameterKey=NotebookInstanceType,ParameterValue=ml.t2.medium ParameterKey=SetupGremlinConsole,ParameterValue=true ParameterKey=SetupRDF4JConsole,ParameterValue=true \
+    --parameters ParameterKey=DBClusterId,ParameterValue="" ParameterKey=NotebookInstanceType,ParameterValue=ml.t3.medium ParameterKey=SetupGremlinConsole,ParameterValue=true ParameterKey=SetupRDF4JConsole,ParameterValue=true \
     --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
     --tags $PROJECT_TAG
 fi
