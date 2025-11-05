@@ -11,7 +11,7 @@ fi
 
 ## clean up application
 echo "Manufacturing Digital Thread aws copilot application will be deleted. Delete started..."
-copilot app delete
+copilot app delete --yes
 rm -rf copilot/environments/demo
 
 # Revert app.env files to empty using cat
