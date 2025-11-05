@@ -25,6 +25,13 @@ Resources:
               - neptune-db:Get*
               - neptune-db:List*
             Resource: '*'
+          - Sid: marketplace
+            Effect: Allow
+            Action:
+              - aws-marketplace:ViewSubscriptions
+              - aws-marketplace:Unsubscribe
+              - aws-marketplace:Subscribe
+            Resource: '*'
 
 Outputs:
   GenAIChatBotPolicyArn: # Result: "GenAIChatBotPolicy" will be added to the task role, granting it access to the said services.
