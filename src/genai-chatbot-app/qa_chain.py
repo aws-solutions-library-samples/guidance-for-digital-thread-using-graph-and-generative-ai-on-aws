@@ -1,4 +1,4 @@
-from langchain.chains import NeptuneOpenCypherQAChain
+from langchain_aws.chains import create_neptune_opencypher_qa_chain
 
 class QAChain:
     def __init__(self, llm, graph, qa_prompt, cypher_prompt):
@@ -8,12 +8,12 @@ class QAChain:
         self.cypher_prompt = cypher_prompt
 
     def create(self):
-        chain = NeptuneOpenCypherQAChain.from_llm(llm=self.llm, 
+        chain = create_neptune_opencypher_qa_chain(llm=self.llm, 
                                                   graph=self.graph, 
                                                   qa_prompt=self.qa_prompt,
                                                   cypher_prompt=self.cypher_prompt,
-                                                  verbose=False, 
-                                                  top_K=10, 
                                                   return_intermediate_steps=True,
-                                                  return_direct=False)
+                                                  return_direct=False,
+                                                  allow_dangerous_requests=True
+                                                  )
         return chain
