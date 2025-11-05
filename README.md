@@ -181,7 +181,7 @@ Leverage Amazon Neptune Bulk loader capability to load the data stored in Amazon
 5. Create User interface
 Create a front end by combining Streamlit App, Amazon Elastic Container Service (ECS) with Fargate for container orchestration, Amazon Elastic Container Registry (ECR) for managing container images, Elastic Load Balancer (ELB) for efficient traffic distribution, and Amazon Cognito for secure user authentication. This comprehensive setup, orchestrated with AWS Copilot CLI, ensures a scalable, secure, and responsive user interface, facilitating a seamless user experience for stakeholders interacting with the digital thread and linked manufacturing data.
 6. Establish knowledge graph, LLM connection and orchestrate using Langchain.
-7. Establish the linkage between Amazon Bedrock (Claude 3.5 Sonnet), Amazon Neptune and orchestrate the integration seamlessly with Langchain. The orchestrator coordinates the entire process of generating the query from the foundation model, executing the query against the knowledge graph and return the results in natural language to the user. 
+7. Establish the linkage between Amazon Bedrock, Amazon Neptune and orchestrate the integration seamlessly with Langchain. The orchestrator coordinates the entire process of generating the query from the foundation model, executing the query against the knowledge graph and return the results in natural language to the user. 
 
 </details>
 
@@ -255,7 +255,7 @@ Blog will be released in April 2024.
 
 7. I made minor adjustments in the existing graph by adding new edges and vertices, but the chat application doesn't seem to recognize the changes. What could be the reason for this issue?
    
-   [Langchain Neptune Graph](https://github.com/langchain-ai/langchain/blob/master/libs/community/langchain_community/graphs/neptune_graph.py) gets the node and edge labels from the Neptune statistics summary. [Neptune statistics](https://docs.aws.amazon.com/neptune/latest/userguide/neptune-dfe-statistics.html) are currently re-generated whenever either more than 10% of data in your graph has changed or when the latest statistics are more than 10 days old. To solve the problem, please run the statistics command "%statistics --mode refresh" immediately after loading any additional changes (Refer mfg-neptune-bulk-import.ipynb). 
+   [Langchain Neptune Graph](https://github.com/langchain-ai/langchain-aws/blob/main/libs/aws/langchain_aws/graphs/neptune_graph.py) gets the node and edge labels from the Neptune statistics summary. [Neptune statistics](https://docs.aws.amazon.com/neptune/latest/userguide/neptune-dfe-statistics.html) are currently re-generated whenever either more than 10% of data in your graph has changed or when the latest statistics are more than 10 days old. To solve the problem, please run the statistics command "%statistics --mode refresh" immediately after loading any additional changes (Refer mfg-neptune-bulk-import.ipynb). 
 
 8. How do i reset neptune DB?
 
