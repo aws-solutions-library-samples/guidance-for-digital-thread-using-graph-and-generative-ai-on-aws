@@ -51,7 +51,7 @@ def init_qa_chain():
 ## parse response from the LLM query output
 def get_query_response(qa_chain, prompt):
     try:
-        output = qa_chain(prompt)
+        output = qa_chain.invoke(prompt)
         intermediate_steps = output['intermediate_steps']
         logging.info(intermediate_steps)
         intermediate_steps_query = intermediate_steps[0]['query']
@@ -162,7 +162,8 @@ def logout():
     login()
     
 def reset_session():
-    st.session_state["llm_model"] = "Claude 3.5 Sonnet"
+    # st.session_state["llm_model"] = "Claude 3.5 Sonnet"
+    st.session_state["llm_model"] = app_config.get_model_list()[0]
     st.session_state["neptune_host"] = app_config.get_neptune_host()
     st.session_state["neptune_port"] = app_config.get_neptune_port()
     st.session_state["cypher_custom_template"] = app_config.get_cypher_custom_template()
@@ -178,7 +179,7 @@ if __name__ == "__main__":
 
     # Set a default session values
     if ("llm_model" not in st.session_state) or (not st.session_state["llm_model"]):
-        st.session_state["llm_model"] = "Claude 3.5 Sonnet"
+        st.session_state["llm_model"] = app_config.get_model_list()[0]
     if ("neptune_host" not in st.session_state) or (not st.session_state["neptune_host"]):
         st.session_state["neptune_host"] = app_config.get_neptune_host()
     if ("neptune_port" not in st.session_state) or (not st.session_state["neptune_port"]):
