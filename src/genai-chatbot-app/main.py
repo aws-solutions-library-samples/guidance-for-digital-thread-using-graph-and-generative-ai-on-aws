@@ -56,7 +56,7 @@ def get_query_response(qa_chain, prompt):
         logging.info(intermediate_steps)
         intermediate_steps_query = intermediate_steps[0]['query']
         query = intermediate_steps_query
-        result = output['result']
+        result = output['result'].content
         return {
             'query': query,
             'result': result
