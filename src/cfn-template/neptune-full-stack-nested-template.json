@@ -165,7 +165,6 @@
         "ml.m5.4xlarge",
         "ml.m5.12xlarge",
         "ml.m5.24xlarge",
-        "ml.c4.large",
         "ml.c4.xlarge",
         "ml.c4.2xlarge",
         "ml.c4.4xlarge",
@@ -179,13 +178,7 @@
         "ml.c5d.2xlarge",
         "ml.c5d.4xlarge",
         "ml.c5d.9xlarge",
-        "ml.c5d.18xlarge",
-        "ml.p3.2xlarge",
-        "ml.p3.8xlarge",
-        "ml.p3.16xlarge",
-        "ml.p2.2xlarge",
-        "ml.p2.8xlarge",
-        "ml.p2.16xlarge"
+        "ml.c5d.18xlarge"
       ],
       "ConstraintDescription": "Must be a valid SageMaker instance type."
     },
@@ -403,6 +396,22 @@
           ]
         }
       ]
+    },
+    "EnableIAMAuth": {
+      "Fn::Equals": [
+        {
+          "Ref": "IamAuthEnabled"
+        },
+        "true"
+      ]
+    },
+    "IsIadRegion": {
+      "Fn::Equals": [
+        {
+          "Ref": "AWS::Region"
+        },
+        "us-east-1"
+      ]
     }
   },
   "Resources": {
@@ -524,81 +533,283 @@
         }
       }
     },
-    "NeptuneSagemakerNotebook": {
-      "Type": "AWS::CloudFormation::Stack",
+    "NeptuneNotebookInstanceLifecycleConfig": {
+      "Type": "AWS::SageMaker::NotebookInstanceLifecycleConfig",
       "Condition": "CreateSagemakerNotebook",
       "Properties": {
-        "TemplateURL": {
+        "OnStart": [
+          {
+            "Content": {
+              "Fn::Base64": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "#!/bin/bash\n",
+                    "sudo -u ec2-user -i <<'EOF'\n\n",
+                    {
+                      "Fn::If": [
+                        "EnableIAMAuth",
+                        "echo \"export GRAPH_NOTEBOOK_AUTH_MODE=IAM\" >> ~/.bashrc\n",
+                        "echo \"export GRAPH_NOTEBOOK_AUTH_MODE=DEFAULT\" >> ~/.bashrc\n"
+                      ]
+                    },
+                    "echo \"export GRAPH_NOTEBOOK_IAM_PROVIDER=ROLE\" >> ~/.bashrc\n",
+                    "echo \"export GRAPH_NOTEBOOK_SSL=True\" >> ~/.bashrc\n",
+                    "echo \"export GRAPH_NOTEBOOK_HOST=",
+                    {
+                      "Fn::GetAtt": [
+                        "NeptuneStack",
+                        "Outputs.DBClusterEndpoint"
+                      ]
+                    },
+                    "\" >> ~/.bashrc\n",
+                    "echo \"export GRAPH_NOTEBOOK_PORT=",
+                    {
+                      "Fn::GetAtt": [
+                        "NeptuneStack",
+                        "Outputs.DBClusterPort"
+                      ]
+                    },
+                    "\" >> ~/.bashrc\n",
+                    "echo \"export NEPTUNE_LOAD_FROM_S3_ROLE_ARN=",
+                    {
+                      "Fn::GetAtt": [
+                        "NeptuneStack",
+                        "Outputs.NeptuneLoadFromS3IAMRoleArn"
+                      ]
+                    },
+                    "\" >> ~/.bashrc\n",
+                    "echo \"export AWS_REGION=",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    "\" >> ~/.bashrc\n\n",
+                    "echo \"export NEPTUNE_ML_ROLE_ARN=\" >> ~/.bashrc\n\n",
+                    "echo \"export NEPTUNE_EXPORT_API_URI=\" >> ~/.bashrc\n\n",
+                    "aws s3 cp s3://",
+                    {
+                      "Fn::If": [
+                        "IsIadRegion",
+                        "aws-neptune-notebook",
+                        {
+                          "Fn::Sub": "aws-neptune-notebook-${AWS::Region}"
+                        }
+                      ]
+                    },
+                    "/graph_notebook.tar.gz /tmp/graph_notebook.tar.gz\n",
+                    "rm -rf /tmp/graph_notebook\n",
+                    "tar -zxvf /tmp/graph_notebook.tar.gz -C /tmp\n",
+                    "/tmp/graph_notebook/install_jl4x.sh\n\n",
+                    {
+                      "Ref": "NeptuneSagemakerNotebookStartupScript"
+                    },
+                    "\n\n",
+                    "EOF"
+                  ]
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    "NeptuneNotebookExecutionRole": {
+      "Type": "AWS::IAM::Role",
+      "Condition": "CreateSagemakerNotebook",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "sagemaker.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "SagemakerNotebookNeptunePolicy",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "cloudwatch:PutMetricData"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "arn:${AWS::Partition}:cloudwatch:${AWS::Region}:${AWS::AccountId}:*"
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:DescribeLogStreams",
+                    "logs:PutLogEvents",
+                    "logs:GetLogEvents"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:*"
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": "neptune-db:*",
+                  "Resource": {
+                    "Fn::Sub": [
+                      "arn:${AWS::Partition}:neptune-db:${AWS::Region}:${AWS::AccountId}:${ClusterResourceId}/*",
+                      {
+                        "ClusterResourceId": {
+                          "Fn::GetAtt": [
+                            "NeptuneStack",
+                            "Outputs.DBClusterResourceId"
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "s3:Put*",
+                    "s3:Get*",
+                    "s3:List*"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "arn:${AWS::Partition}:s3:::*"
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": "execute-api:Invoke",
+                  "Resource": {
+                    "Fn::Sub": "arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:*/*"
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "sagemaker:CreateModel",
+                    "sagemaker:CreateEndpointConfig",
+                    "sagemaker:CreateEndpoint",
+                    "sagemaker:DescribeModel",
+                    "sagemaker:DescribeEndpointConfig",
+                    "sagemaker:DescribeEndpoint",
+                    "sagemaker:DeleteModel",
+                    "sagemaker:DeleteEndpointConfig",
+                    "sagemaker:DeleteEndpoint"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "arn:${AWS::Partition}:sagemaker:${AWS::Region}:${AWS::AccountId}:*/*"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "NeptuneNotebookInstance": {
+      "Type": "AWS::SageMaker::NotebookInstance",
+      "Condition": "CreateSagemakerNotebook",
+      "Properties": {
+        "InstanceType": {
+          "Ref": "NotebookInstanceType"
+        },
+        "PlatformIdentifier": "notebook-al2023-v1",
+        "NotebookInstanceName": {
           "Fn::Join": [
             "",
             [
-              "https://s3.amazonaws.com/aws-neptune-customer-samples/v2/cloudformation-templates/neptune-sagemaker-notebook-stack.json"
+              "aws-neptune-notebook-for-",
+              {
+                "Fn::GetAtt": [
+                  "NeptuneStack",
+                  "Outputs.DBClusterId"
+                ]
+              }
             ]
           ]
         },
-        "TimeoutInMinutes": "30",
-        "Parameters": {
-          "Env": {
-            "Ref": "Env"
-          },
-          "NotebookInstanceType": {
-            "Ref": "NotebookInstanceType"
-          },
-          "NeptuneClusterEndpoint": {
-            "Fn::GetAtt": [
-              "NeptuneStack",
-              "Outputs.DBClusterEndpoint"
-            ]
-          },
-          "NeptuneClusterPort": {
-            "Fn::GetAtt": [
-              "NeptuneStack",
-              "Outputs.DBClusterPort"
-            ]
-          },
-          "NeptuneClusterVpc": {
-            "Fn::GetAtt": [
-              "NeptuneStack",
-              "Outputs.VPC"
-            ]
-          },
-          "NeptuneClusterSubnetId": {
-            "Fn::GetAtt": [
-              "NeptuneStack",
-              "Outputs.PublicSubnet1"
-            ]
-          },
-          "NeptuneClientSecurityGroup": {
+        "SubnetId": {
+          "Fn::GetAtt": [
+            "NeptuneStack",
+            "Outputs.PublicSubnet1"
+          ]
+        },
+        "SecurityGroupIds": [
+          {
             "Fn::GetAtt": [
               "NeptuneStack",
               "Outputs.NeptuneSG"
             ]
-          },
-          "NeptuneLoadFromS3RoleArn": {
-            "Fn::GetAtt": [
-              "NeptuneStack",
-              "Outputs.NeptuneLoadFromS3IAMRoleArn"
-            ]
-          },
-          "StartupScript": {
-            "Ref": "NeptuneSagemakerNotebookStartupScript"
-          },
-          "DBClusterId": {
-            "Fn::GetAtt": [
-              "NeptuneStack",
-              "Outputs.DBClusterId"
-            ]
-          },
-          "NeptuneClusterResourceId": {
-            "Fn::GetAtt": [
-              "NeptuneStack",
-              "Outputs.DBClusterResourceId"
-            ]
-          },
-          "EnableIamAuthOnNeptune" : {
-            "Ref": "IamAuthEnabled"
           }
-        }
+        ],
+        "RoleArn": {
+          "Fn::GetAtt": [
+            "NeptuneNotebookExecutionRole",
+            "Arn"
+          ]
+        },
+        "LifecycleConfigName": {
+          "Fn::GetAtt": [
+            "NeptuneNotebookInstanceLifecycleConfig",
+            "NotebookInstanceLifecycleConfigName"
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Sub": "Neptune-${Env}"
+            }
+          },
+          {
+            "Key": "StackId",
+            "Value": {
+              "Fn::Sub": "${AWS::StackId}"
+            }
+          },
+          {
+            "Key": "Stack",
+            "Value": {
+              "Fn::Sub": "${AWS::Region}-${AWS::StackName}"
+            }
+          },
+          {
+            "Key": "Application",
+            "Value": "NeptuneCloudformation"
+          },
+          {
+            "Key": "aws-neptune-cluster-id",
+            "Value": {
+              "Fn::GetAtt": [
+                "NeptuneStack",
+                "Outputs.DBClusterId"
+              ]
+            }
+          },
+          {
+            "Key": "aws-neptune-resource-id",
+            "Value": {
+              "Fn::GetAtt": [
+                "NeptuneStack",
+                "Outputs.DBClusterResourceId"
+              ]
+            }
+          }
+        ]
       }
     }
   },
@@ -810,9 +1021,29 @@
       "Condition": "CreateSagemakerNotebook",
       "Description": "Neptune Sagemaker Notebook Name",
       "Value": {
-        "Fn::GetAtt": [
-          "NeptuneSagemakerNotebook",
-          "Outputs.NeptuneSagemakerNotebook"
+        "Fn::Join": [
+          "",
+          [
+            "https://",
+            {
+              "Fn::Select": [
+                1,
+                {
+                  "Fn::Split": [
+                    "/",
+                    {
+                      "Ref": "NeptuneNotebookInstance"
+                    }
+                  ]
+                }
+              ]
+            },
+            ".notebook.",
+            {
+              "Ref": "AWS::Region"
+            },
+            ".sagemaker.aws/"
+          ]
         ]
       }
     },
@@ -820,10 +1051,7 @@
       "Condition": "CreateSagemakerNotebook",
       "Description": "Neptune Sagemaker Notebook Instance Lifecycle ConfigId",
       "Value": {
-        "Fn::GetAtt": [
-          "NeptuneSagemakerNotebook",
-          "Outputs.NeptuneNotebookInstanceLifecycleConfigId"
-        ]
+        "Ref": "NeptuneNotebookInstanceLifecycleConfig"
       }
     }
   }
