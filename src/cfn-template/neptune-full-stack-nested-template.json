@@ -1,13 +1,7 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "Neptune full stack with gremlin and rd4j console (SO9409)",
+  "Description": "Neptune full stack with SageMaker notebook (SO9409)",
   "Parameters": {
-    "EC2SSHKeyPairName": {
-      "Description": "OPTIONAL: Name of an existing EC2 KeyPair to enable SSH access to the instances. Required only if an EC2ClientInstanceType is specified",
-      "Type": "String",
-      "ConstraintDescription": "Must be the name of an existing EC2 KeyPair in same region.",
-      "Default": ""
-    },
     "Env": {
       "Description": "Environment tag, e.g. prod, nonprod.",
       "Default": "test",
@@ -69,28 +63,6 @@
       "Default": "8182",
       "Description": "Enter the port of your Neptune cluster"
     },
-    "EC2ClientInstanceType": {
-      "Description": "OPTIONAL: EC2 client instance. Required only if EC2 client needs to setup. Please refer to https://aws.amazon.com/ec2/pricing/ for pricing.",
-      "Type": "String",
-      "Default": "none",
-      "AllowedValues": [
-        "none",
-        "t3.micro",
-        "t3.small",
-        "t3.medium",
-        "m5.large",
-        "m5.xlarge",
-        "m5.2xlarge",
-        "m5.4xlarge",
-        "m5.12xlarge",
-        "r5.large",
-        "r5.xlarge",
-        "r5.2xlarge",
-        "r5.4xlarge",
-        "r5.12xlarge"
-      ],
-      "ConstraintDescription": "Must be a valid EC2 instance type. Note some regions support limited instance types only. Ex: Stockholm and OSU does not support R4 instances"
-    },
     "NeptuneQueryTimeout": {
       "Type": "Number",
       "Default": 20000,
@@ -113,24 +85,6 @@
         "false"
       ],
       "Description": "Enable IAM Auth for Neptune."
-    },
-    "SetupGremlinConsole": {
-      "Type": "String",
-      "Default": "false",
-      "AllowedValues": [
-        "true",
-        "false"
-      ],
-      "Description": "OPTIONAL: Setup Gremlin console on EC2 client. Used only if EC2ClientInstanceType is specified."
-    },
-    "SetupRDF4JConsole": {
-      "Type": "String",
-      "Default": "false",
-      "AllowedValues": [
-        "true",
-        "false"
-      ],
-      "Description": "OPTIONAL: Setup RDF4J console on EC2 client. Used only if EC2ClientInstanceType is specified."
     },
     "AttachBulkloadIAMRoleToNeptuneCluster": {
       "Type": "String",
@@ -241,62 +195,6 @@
         }
       ]
     },
-    "EC2ClientInstanceTypeVsRegion": {
-      "RuleCondition": {
-          "Fn::Or" : [
-          { "Fn::Equals": [
-            { "Ref": "AWS::Region" },
-            "eu-north-1"
-          ]},
-          { "Fn::Equals": [
-            { "Ref": "AWS::Region" },
-              "us-gov-east-1"
-          ]},
-          { "Fn::Equals": [
-            { "Ref": "AWS::Region" },
-              "us-west-1"
-          ]},
-          { "Fn::Equals": [
-            { "Ref": "AWS::Region" },
-              "ap-east-1"
-          ]},
-          { "Fn::Equals": [
-            { "Ref": "AWS::Region" },
-              "sa-east-1"
-          ]},
-          { "Fn::Equals": [
-            { "Ref": "AWS::Region" },
-            "ca-central-1"
-          ]},
-          { "Fn::Equals": [
-            { "Ref": "AWS::Region" },
-            "me-south-1"
-          ]},
-          { "Fn::Equals": [
-            { "Ref": "AWS::Region" },
-            "af-south-1"
-          ]},
-          { "Fn::Equals": [
-            { "Ref": "AWS::Region" },
-            "cn-northwest-1"
-          ]}]
-      },
-      "Assertions": [
-        {
-          "Assert": {
-            "Fn::Not": [
-              {
-                "Fn::Contains": [
-                  [ "r4.large", "r4.xlarge", "r4.2xlarge", "r4.4xlarge", "r4.8xlarge" ],
-                  { "Ref": "EC2ClientInstanceType" }
-                ]
-              }
-            ]
-          },
-          "AssertDescription": "R4 Instances are not available in eu-north-1 (ARN), us-gov-east-1 (OSU), ca-central-1 (YUL), us-west-1(SFO), me-south-1 (BAH), ap-east-1 (HKG), sa-east-1 (GRU) af-south-1 (CPT) and cn-northwest-1 (ZHY)"
-        }
-      ]
-    },
     "SagemakerNotebookInstanceTypeVsRegion": {
       "RuleCondition": {
         "Fn::Or" : [
@@ -325,37 +223,6 @@
           "AssertDescription": "Neptune Sagemaker notebooks are not available in us-gov-east-1 (OSU) and us-gov-west-1 (PDT)"
         }
       ]
-    },
-    "EC2SSHKeyPairNameRequiredIfEC2Instance": {
-      "RuleCondition": {
-		  "Fn::Not": [
-			{
-			  "Fn::Equals": [
-				{
-				  "Ref": "EC2ClientInstanceType"
-				},
-				"none"
-			  ]
-			}
-		  ]
-		},
-      "Assertions": [
-        {
-          "Assert": {
-			  "Fn::Not": [
-				{
-				  "Fn::Equals": [
-					{
-					  "Ref": "EC2SSHKeyPairName"
-					},
-					""
-				  ]
-				}
-			  ]
-			},
-          "AssertDescription": "EC2SSHKeyPairName is required if an EC2 client instance is specified"
-        }
-      ]
     }
   },
   "Conditions": {
@@ -373,18 +240,6 @@
     },
     "AZ3NotPresent": {"Fn::Or": [{"Fn::Equals": [{"Ref": "AWS::Region"}, "ca-central-1"]}, {"Fn::Equals": [{"Ref": "AWS::Region"}, "us-west-1"]}]},
     "AZ3Present": { "Fn::Not": [{ "Condition": "AZ3NotPresent" }] },
-    "CreateEC2Instance": {
-      "Fn::Not": [
-        {
-          "Fn::Equals": [
-            {
-              "Ref": "EC2ClientInstanceType"
-            },
-            "none"
-          ]
-        }
-      ]
-    },
     "CreateSagemakerNotebook": {
       "Fn::Not": [
         {
@@ -461,74 +316,6 @@
           },
           "MaxNCUs": {
             "Ref": "MaxNCUs"
-          }
-        }
-      }
-    },
-    "NeptuneEC2Client": {
-      "Type": "AWS::CloudFormation::Stack",
-      "Condition": "CreateEC2Instance",
-      "Properties": {
-        "TemplateURL": {
-          "Fn::Join": [
-            "",
-            [
-              "https://s3.amazonaws.com/aws-neptune-customer-samples/v2/cloudformation-templates/neptune-ec2-client.json"
-            ]
-          ]
-        },
-        "TimeoutInMinutes": "30",
-        "Parameters": {
-          "Env": {
-            "Ref": "Env"
-          },
-          "EC2SSHKeyPairName": {
-            "Ref": "EC2SSHKeyPairName"
-          },
-          "EC2ClientInstanceType": {
-            "Ref": "EC2ClientInstanceType"
-          },
-          "SetupGremlinConsole": {
-            "Ref": "SetupGremlinConsole"
-          },
-          "SetupRDF4JConsole": {
-            "Ref": "SetupRDF4JConsole"
-          },
-          "VPC": {
-            "Fn::GetAtt": [
-              "NeptuneStack",
-              "Outputs.VPC"
-            ]
-          },
-          "Subnet": {
-            "Fn::GetAtt": [
-              "NeptuneStack",
-              "Outputs.PublicSubnet1"
-            ]
-          },
-          "NeptuneDBCluster": {
-            "Fn::GetAtt": [
-              "NeptuneStack",
-              "Outputs.DBClusterId"
-            ]
-          },
-          "NeptuneDBClusterEndpoint": {
-            "Fn::GetAtt": [
-              "NeptuneStack",
-              "Outputs.DBClusterEndpoint"
-            ]
-          },
-          "NeptuneDBClusterPort": {
-            "Fn::GetAtt": [
-              "NeptuneStack",
-              "Outputs.DBClusterPort"
-            ]
-          },
-          "NeptuneClientRole": {
-            "Fn::GetAtt": [
-              "NeptuneStack",
-              "Outputs.NeptuneClientRole"
-            ]
           }
         }
       }
@@ -929,26 +716,6 @@
         "Fn::GetAtt": [
           "NeptuneStack",
           "Outputs.NeptuneIamAuthUser"
-        ]
-      }
-    },
-    "EC2Client": {
-      "Condition": "CreateEC2Instance",
-      "Description": "EC2 client Identifier",
-      "Value": {
-        "Fn::GetAtt": [
-          "NeptuneEC2Client",
-          "Outputs.EC2Client"
-        ]
-      }
-    },
-    "SSHAccess": {
-      "Condition": "CreateEC2Instance",
-      "Description": "This is how you gain remote access to the EC2 client.",
-      "Value": {
-        "Fn::GetAtt": [
-          "NeptuneEC2Client",
-          "Outputs.SSHAccess"
         ]
       }
     },
